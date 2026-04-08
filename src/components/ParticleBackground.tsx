@@ -27,14 +27,14 @@ const ParticleBackground = () => {
     resize();
     window.addEventListener("resize", resize);
 
-    const count = Math.min(80, Math.floor(window.innerWidth / 15));
+    const count = Math.min(100, Math.floor(window.innerWidth / 12));
     particlesRef.current = Array.from({ length: count }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
       size: Math.random() * 2 + 0.5,
-      opacity: Math.random() * 0.5 + 0.2,
+      opacity: Math.random() * 0.5 + 0.1,
     }));
 
     const handleMouse = (e: MouseEvent) => {
@@ -58,8 +58,8 @@ const ParticleBackground = () => {
         const dy = mouse.y - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 200) {
-          p.vx += dx * 0.00005;
-          p.vy += dy * 0.00005;
+          p.vx += dx * 0.00003;
+          p.vy += dy * 0.00003;
         }
 
         ctx.beginPath();
@@ -73,11 +73,11 @@ const ParticleBackground = () => {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
+          if (dist < 130) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 200, 255, ${0.15 * (1 - dist / 120)})`;
+            ctx.strokeStyle = `rgba(0, 200, 255, ${0.12 * (1 - dist / 130)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }

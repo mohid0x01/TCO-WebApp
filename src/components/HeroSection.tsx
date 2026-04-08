@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import owlLogo from "@/assets/owl-logo.png";
+import badge from "@/assets/teamcyberops-badge.jpeg";
 import ParticleBackground from "./ParticleBackground";
 import GlitchText from "./GlitchText";
 import TypingText from "./TypingText";
@@ -8,62 +8,81 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <ParticleBackground />
-      <div className="absolute inset-0 grid-bg opacity-30" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background z-10" />
+      <div className="absolute inset-0 grid-bg opacity-20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background z-10" />
+
+      {/* Decorative corner brackets */}
+      <div className="absolute top-24 left-8 w-16 h-16 border-l-2 border-t-2 border-primary/20 z-20 hidden lg:block" />
+      <div className="absolute top-24 right-8 w-16 h-16 border-r-2 border-t-2 border-primary/20 z-20 hidden lg:block" />
+      <div className="absolute bottom-16 left-8 w-16 h-16 border-l-2 border-b-2 border-primary/20 z-20 hidden lg:block" />
+      <div className="absolute bottom-16 right-8 w-16 h-16 border-r-2 border-b-2 border-primary/20 z-20 hidden lg:block" />
 
       <div className="relative z-20 text-center px-4 max-w-5xl mx-auto">
         <motion.div
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="mb-8"
+          initial={{ scale: 0.5, opacity: 0, rotateY: 180 }}
+          animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="mb-10"
         >
-          <img
-            src={owlLogo}
-            alt="TeamCyberOps Owl Logo"
-            width={512}
-            height={512}
-            className="w-32 h-32 md:w-44 md:h-44 mx-auto animate-float drop-shadow-[0_0_30px_rgba(0,200,255,0.4)]"
-          />
+          <div className="relative inline-block">
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl scale-110" />
+            <img
+              src={badge}
+              alt="TeamCyberOps Badge"
+              width={512}
+              height={512}
+              className="relative w-36 h-36 md:w-48 md:h-48 mx-auto rounded-full ring-2 ring-primary/30 shadow-2xl shadow-primary/20 animate-float"
+            />
+          </div>
         </motion.div>
 
         <motion.h1
-          initial={{ y: 30, opacity: 0 }}
+          initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="font-display text-4xl sm:text-5xl md:text-7xl font-bold tracking-wider text-glow-blue text-primary mb-6"
+          transition={{ delay: 0.4, duration: 0.7 }}
+          className="font-display text-5xl sm:text-6xl md:text-8xl tracking-wider text-glow-blue text-primary mb-4"
         >
-          <GlitchText text="TeamCyberOps" />
+          <GlitchText text="TEAMCYBEROPS" />
         </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7 }}
+          className="font-mono-terminal text-xs text-muted-foreground tracking-[0.3em] uppercase mb-6"
+        >
+          Cybersecurity & Ethical Hacking Organization
+        </motion.p>
 
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          className="text-lg md:text-2xl text-foreground/80 mb-10"
+          transition={{ delay: 1, duration: 0.5 }}
+          className="text-xl md:text-2xl text-foreground/80 mb-12"
         >
-          <TypingText text="Monitor and Protect" speed={100} />
+          <TypingText text="Monitor and Protect" speed={90} />
         </motion.div>
 
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.5 }}
+          transition={{ delay: 1.8, duration: 0.5 }}
           className="flex flex-wrap gap-4 justify-center"
         >
+          <a
+            href="#projects"
+            onClick={(e) => { e.preventDefault(); document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }); }}
+            className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 bg-primary/10 border border-primary/40 text-primary hover:bg-primary/20 hover:box-glow-blue transition-all duration-300 rounded-lg glass"
+          >
+            Explore Arsenal →
+          </a>
           <a
             href="https://github.com/mohidqx"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-display text-sm tracking-widest uppercase px-8 py-3 border border-primary/50 text-primary hover:bg-primary/10 hover:box-glow-blue transition-all duration-300 rounded"
+            className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 border border-neon-red/30 text-neon-red hover:bg-neon-red/10 hover:box-glow-red transition-all duration-300 rounded-lg"
           >
-            View Arsenal →
-          </a>
-          <a
-            href="#projects"
-            className="font-display text-sm tracking-widest uppercase px-8 py-3 border border-neon-red/50 text-neon-red hover:bg-neon-red/10 hover:box-glow-red transition-all duration-300 rounded"
-          >
-            Explore Projects
+            GitHub →
           </a>
         </motion.div>
       </div>
@@ -73,8 +92,8 @@ const HeroSection = () => {
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="w-6 h-10 border-2 border-primary/30 rounded-full flex items-start justify-center p-1">
-          <div className="w-1.5 h-3 bg-primary/60 rounded-full" />
+        <div className="w-6 h-10 border-2 border-primary/20 rounded-full flex items-start justify-center p-1.5">
+          <div className="w-1 h-2.5 bg-primary/50 rounded-full" />
         </div>
       </motion.div>
     </section>
