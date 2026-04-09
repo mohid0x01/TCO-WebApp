@@ -3,15 +3,17 @@ import badge from "@/assets/teamcyberops-badge.jpeg";
 import ParticleBackground from "./ParticleBackground";
 import GlitchText from "./GlitchText";
 import TypingText from "./TypingText";
+import { useSiteContent } from "@/hooks/use-cms";
 
 const HeroSection = () => {
+  const { data: content } = useSiteContent();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <ParticleBackground />
       <div className="absolute inset-0 grid-bg opacity-20" />
       <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background z-10" />
 
-      {/* Decorative corner brackets */}
       <div className="absolute top-24 left-8 w-16 h-16 border-l-2 border-t-2 border-primary/20 z-20 hidden lg:block" />
       <div className="absolute top-24 right-8 w-16 h-16 border-r-2 border-t-2 border-primary/20 z-20 hidden lg:block" />
       <div className="absolute bottom-16 left-8 w-16 h-16 border-l-2 border-b-2 border-primary/20 z-20 hidden lg:block" />
@@ -42,7 +44,7 @@ const HeroSection = () => {
           transition={{ delay: 0.4, duration: 0.7 }}
           className="font-display text-5xl sm:text-6xl md:text-8xl tracking-wider text-glow-blue text-primary mb-4"
         >
-          <GlitchText text="TEAMCYBEROPS" />
+          <GlitchText text={content?.hero_title || "TEAMCYBEROPS"} />
         </motion.h1>
 
         <motion.p
@@ -51,7 +53,7 @@ const HeroSection = () => {
           transition={{ delay: 0.7 }}
           className="font-mono-terminal text-xs text-muted-foreground tracking-[0.3em] uppercase mb-6"
         >
-          Cybersecurity & Ethical Hacking Organization
+          {content?.hero_subtitle || "Cybersecurity & Ethical Hacking Organization"}
         </motion.p>
 
         <motion.div
@@ -60,7 +62,7 @@ const HeroSection = () => {
           transition={{ delay: 1, duration: 0.5 }}
           className="text-xl md:text-2xl text-foreground/80 mb-12"
         >
-          <TypingText text="Monitor and Protect" speed={90} />
+          <TypingText text={content?.hero_motto || "Monitor and Protect"} speed={90} />
         </motion.div>
 
         <motion.div
@@ -74,7 +76,7 @@ const HeroSection = () => {
             onClick={(e) => { e.preventDefault(); document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }); }}
             className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 bg-primary/10 border border-primary/40 text-primary hover:bg-primary/20 hover:box-glow-blue transition-all duration-300 rounded-lg glass"
           >
-            Explore Arsenal →
+            {content?.hero_cta_primary || "Explore Arsenal →"}
           </a>
           <a
             href="https://github.com/mohidqx"
@@ -82,7 +84,7 @@ const HeroSection = () => {
             rel="noopener noreferrer"
             className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 border border-neon-red/30 text-neon-red hover:bg-neon-red/10 hover:box-glow-red transition-all duration-300 rounded-lg"
           >
-            GitHub →
+            {content?.hero_cta_secondary || "GitHub →"}
           </a>
         </motion.div>
       </div>

@@ -14,7 +14,168 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      projects: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          github_url: string | null
+          id: string
+          is_auto_synced: boolean
+          is_visible: boolean
+          language: string
+          long_description: string | null
+          name: string
+          order_index: number
+          stars: number
+          tech: string[]
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string
+          github_url?: string | null
+          id?: string
+          is_auto_synced?: boolean
+          is_visible?: boolean
+          language?: string
+          long_description?: string | null
+          name: string
+          order_index?: number
+          stars?: number
+          tech?: string[]
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          github_url?: string | null
+          id?: string
+          is_auto_synced?: boolean
+          is_visible?: boolean
+          language?: string
+          long_description?: string | null
+          name?: string
+          order_index?: number
+          stars?: number
+          tech?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          content_type: string
+          created_at: string
+          id: string
+          key: string
+          section: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          content_type?: string
+          created_at?: string
+          id?: string
+          key: string
+          section?: string
+          updated_at?: string
+          value?: string
+        }
+        Update: {
+          content_type?: string
+          created_at?: string
+          id?: string
+          key?: string
+          section?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      social_links: {
+        Row: {
+          created_at: string
+          icon: string
+          id: string
+          is_active: boolean
+          order_index: number
+          platform: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          order_index?: number
+          platform: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          order_index?: number
+          platform?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          alias: string | null
+          avatar_url: string | null
+          bio: string | null
+          clearance_level: string
+          created_at: string
+          github_url: string | null
+          id: string
+          is_active: boolean
+          linkedin_url: string | null
+          name: string
+          order_index: number
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          alias?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          clearance_level?: string
+          created_at?: string
+          github_url?: string | null
+          id?: string
+          is_active?: boolean
+          linkedin_url?: string | null
+          name: string
+          order_index?: number
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          alias?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          clearance_level?: string
+          created_at?: string
+          github_url?: string | null
+          id?: string
+          is_active?: boolean
+          linkedin_url?: string | null
+          name?: string
+          order_index?: number
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
