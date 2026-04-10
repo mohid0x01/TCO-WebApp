@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 export type SiteContent = Record<string, string>;
 
@@ -28,6 +29,21 @@ export function useProjects() {
         .from("projects")
         .select("*")
         .eq("is_visible", true)
+        .order("order_index");
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useAllProjects() {
+  return useQuery({
+    queryKey: ["projects-all"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
         .order("order_index");
       if (error) throw error;
       return data;
@@ -68,15 +84,71 @@ export function useSocialLinks() {
   });
 }
 
+// Blog posts
+export function useBlogPosts(publishedOnly = true) {
+  return useQuery({
+    queryKey: ["blog-posts", publishedOnly],
+    queryFn: async () => {
+      let q = supabase.from("blog_posts").select("*").order("published_at", { ascending: false });
+      if (publishedOnly) q = q.eq("is_published", true);
+      const { data, error } = await q;
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useBlogPost(slug: string) {
+  return useQuery({
+    queryKey: ["blog-post", slug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("slug", slug)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!slug,
+  });
+}
+
+// Contact messages with realtime
+export function useContactMessages() {
+  const qc = useQueryClient();
+  
+  useEffect(() => {
+    const channel = supabase
+      .channel("contact-messages-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "contact_messages" }, () => {
+        qc.invalidateQueries({ queryKey: ["contact-messages"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [qc]);
+
+  return useQuery({
+    queryKey: ["contact-messages"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("contact_messages")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 10_000,
+  });
+}
+
 // Admin mutations
 export function useUpdateContent() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ key, value }: { key: string; value: string }) => {
-      const { error } = await supabase
-        .from("site_content")
-        .update({ value })
-        .eq("key", key);
+      const { error } = await supabase.from("site_content").update({ value }).eq("key", key);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["site-content"] }),
@@ -146,6 +218,52 @@ export function useDeleteSocialLink() {
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["social-links"] }),
+  });
+}
+
+// Blog mutations
+export function useUpsertBlogPost() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (post: any) => {
+      const { error } = await supabase.from("blog_posts").upsert(post);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["blog-posts"] }),
+  });
+}
+
+export function useDeleteBlogPost() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("blog_posts").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["blog-posts"] }),
+  });
+}
+
+// Mark message as read
+export function useMarkMessageRead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("contact_messages").update({ is_read: true }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["contact-messages"] }),
+  });
+}
+
+export function useDeleteMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("contact_messages").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["contact-messages"] }),
   });
 }
 

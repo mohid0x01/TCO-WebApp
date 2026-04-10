@@ -73,9 +73,9 @@ const FooterSection = () => {
                 {link}
               </button>
             ))}
-            <Link to="/terms" className="font-mono-terminal text-xs text-muted-foreground hover:text-primary transition-colors">
-              Terms
-            </Link>
+            <Link to="/tools" className="font-mono-terminal text-xs text-muted-foreground hover:text-primary transition-colors">Tools</Link>
+            <Link to="/blog" className="font-mono-terminal text-xs text-muted-foreground hover:text-primary transition-colors">Blog</Link>
+            <Link to="/terms" className="font-mono-terminal text-xs text-muted-foreground hover:text-primary transition-colors">Terms</Link>
           </div>
 
           <div className="flex gap-2 md:justify-end flex-wrap lg:hidden">

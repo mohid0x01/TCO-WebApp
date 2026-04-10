@@ -1,25 +1,33 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useSiteContent } from "@/hooks/use-cms";
+import { supabase } from "@/integrations/supabase/client";
 
 const ContactSection = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const { data: content } = useSiteContent();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !message.trim()) return;
     setStatus("sending");
-    const subject = encodeURIComponent(`[TeamCyberOps Contact] Message from ${name.trim()}`);
-    const body = encodeURIComponent(`Name: ${name.trim()}\nEmail: ${email.trim()}\n\n${message.trim()}`);
-    window.open(`mailto:contact@teamcyberops.org?subject=${subject}&body=${body}`, "_self");
-    setTimeout(() => {
+    
+    const { error } = await supabase.from("contact_messages").insert({
+      name: name.trim(),
+      email: email.trim(),
+      message: message.trim(),
+    });
+    
+    if (error) {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    } else {
       setStatus("sent");
       setTimeout(() => { setStatus("idle"); setName(""); setEmail(""); setMessage(""); }, 3000);
-    }, 1000);
+    }
   };
 
   return (
@@ -69,10 +77,11 @@ const ContactSection = () => {
                 {status === "idle" && ">> Transmit Message <<"}
                 {status === "sending" && "Encrypting..."}
                 {status === "sent" && "✓ Transmission Complete"}
+                {status === "error" && "⚠ Error — Try Again"}
               </button>
             </form>
             <div className="font-mono-terminal text-[10px] text-muted-foreground/50 mt-4 text-center">
-              All transmissions are encrypted end-to-end // PGP keys available on request
+              Messages are delivered directly to our operations center in real-time
             </div>
           </div>
         </motion.div>

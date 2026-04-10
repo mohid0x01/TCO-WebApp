@@ -62,12 +62,13 @@ const StatsSection = () => {
         <motion.div style={{ y }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
           <span className="font-mono-terminal text-sm text-neon-green tracking-widest uppercase">{content?.stats_label || "// Live Intel"}</span>
           <h2 className="font-display text-4xl md:text-6xl text-foreground mt-2">{content?.stats_title || "Operations Dashboard"}</h2>
+          <p className="font-mono-terminal text-xs text-muted-foreground mt-3">Managed via Admin Panel • Live Data</p>
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-neon-green to-transparent mx-auto mt-6" />
         </motion.div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {stats.map((stat, i) => (
-            <motion.div key={stat.label} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }} className="glass-card rounded-xl p-6 text-center gradient-border">
-              <div className="text-2xl mb-3">{stat.icon}</div>
+            <motion.div key={stat.label} initial={{ opacity: 0, scale: 0.8, y: 30 }} whileInView={{ opacity: 1, scale: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.5, type: "spring" }} className="glass-card rounded-xl p-4 md:p-6 text-center gradient-border">
+              <motion.div initial={{ rotateY: 90 }} whileInView={{ rotateY: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 + 0.3 }} className="text-2xl mb-3">{stat.icon}</motion.div>
               <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={inView} />
               <p className="font-mono-terminal text-[10px] text-muted-foreground mt-3 tracking-wider uppercase leading-tight">{stat.label}</p>
             </motion.div>

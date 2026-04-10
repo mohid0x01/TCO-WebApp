@@ -4,6 +4,7 @@ import MissionSection from "@/components/MissionSection";
 import ArsenalSection from "@/components/ArsenalSection";
 import StatsSection from "@/components/StatsSection";
 import CrewSection from "@/components/CrewSection";
+import BlogSection from "@/components/BlogSection";
 import ContactSection from "@/components/ContactSection";
 import FooterSection, { SocialBar } from "@/components/FooterSection";
 import CyberBackground3D from "@/components/CyberBackground3D";
@@ -19,6 +20,7 @@ const Index = () => {
       <ArsenalSection />
       <StatsSection />
       <CrewSection />
+      <BlogSection />
       <ContactSection />
       <FooterSection />
     </div>
