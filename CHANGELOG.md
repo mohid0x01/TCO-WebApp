@@ -1,0 +1,46 @@
+# Changelog
+
+All notable changes to TeamCyberØps are documented here.
+
+## [1.3.0] — 2026-04-11
+
+### Added
+- **Services & Pricing Section** — Six cybersecurity services with pricing, features, and "Get Quote" CTA
+- **Services Admin Tab** — Full CRUD for services in admin panel
+- **CHANGELOG.md** — This file
+
+### Changed
+- Hero banner text updated to **TeamCyberØps** (with Ø character)
+- Admin panel navbar displays **TeamCyberØps** branding
+- README.md fully rewritten with tech stack, features, and project structure
+
+## [1.2.0] — 2026-04-10
+
+### Added
+- Blog system with `/blog` and `/blog/:slug` pages
+- Blog admin tab with CRUD, publish/draft toggle
+- Tools page at `/tools` with category filtering and detail modals
+- Logo flip animation in WHO WE ARE section (badge ↔ skull)
+- Realtime message notifications in admin panel
+- Enhanced 3D WebGL background (globe, DNA helix, octahedrons, grid floor)
+
+### Changed
+- Social links updated with real URLs (LinkedIn, X, WhatsApp, GitHub)
+- Navbar gains mobile hamburger menu and page links
+
+## [1.1.0] — 2026-04-09
+
+### Added
+- Lovable Cloud integration with CMS-driven site content
+- Admin panel at `/admin?key=***` with secret URL access
+- Database tables: site_content, projects, team_members, social_links, contact_messages
+- GitHub auto-sync for project cards
+- 3D WebGL particle background using Three.js
+- Terms & Conditions page at `/terms`
+- Scroll parallax and staggered animations
+
+## [1.0.0] — 2026-04-08
+
+### Added
+- Initial TeamCyberOps website with Hero, Mission, Arsenal, Stats, Crew, Contact, Footer sections
+- Dark hacker theme with neon-blue primary color
