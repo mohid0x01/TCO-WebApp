@@ -92,6 +92,7 @@ const Admin = () => {
           {tab === "messages" && <MessagesTab />}
           {tab === "content" && <ContentTab />}
           {tab === "projects" && <ProjectsTab />}
+          {tab === "services" && <ServicesTab />}
           {tab === "blog" && <BlogTab />}
           {tab === "team" && <TeamTab />}
           {tab === "social" && <SocialTab />}
