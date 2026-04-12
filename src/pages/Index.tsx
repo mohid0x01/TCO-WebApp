@@ -5,6 +5,7 @@ import ArsenalSection from "@/components/ArsenalSection";
 import StatsSection from "@/components/StatsSection";
 import CrewSection from "@/components/CrewSection";
 import BlogSection from "@/components/BlogSection";
+import ServicesSection from "@/components/ServicesSection";
 import ContactSection from "@/components/ContactSection";
 import FooterSection, { SocialBar } from "@/components/FooterSection";
 import CyberBackground3D from "@/components/CyberBackground3D";
@@ -19,6 +20,7 @@ const Index = () => {
       <MissionSection />
       <ArsenalSection />
       <StatsSection />
+      <ServicesSection />
       <CrewSection />
       <BlogSection />
       <ContactSection />

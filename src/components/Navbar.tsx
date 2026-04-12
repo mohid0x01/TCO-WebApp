@@ -6,6 +6,7 @@ import badge from "@/assets/teamcyberops-badge.jpeg";
 const navLinks = [
   { label: "Mission", href: "#mission", type: "scroll" },
   { label: "Arsenal", href: "#projects", type: "scroll" },
+  { label: "Services", href: "#services", type: "scroll" },
   { label: "Intel", href: "#stats", type: "scroll" },
   { label: "Crew", href: "#crew", type: "scroll" },
   { label: "Contact", href: "#contact", type: "scroll" },

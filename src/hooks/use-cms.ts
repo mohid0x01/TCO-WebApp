@@ -84,6 +84,66 @@ export function useSocialLinks() {
   });
 }
 
+// Services
+export function useServices() {
+  return useQuery({
+    queryKey: ["services"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("*")
+        .eq("is_active", true)
+        .order("order_index");
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useAllServices() {
+  return useQuery({
+    queryKey: ["services-all"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("*")
+        .order("order_index");
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useUpsertService() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (service: any) => {
+      const { error } = await supabase.from("services").upsert(service);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["services"] });
+      qc.invalidateQueries({ queryKey: ["services-all"] });
+    },
+  });
+}
+
+export function useDeleteService() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("services").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["services"] });
+      qc.invalidateQueries({ queryKey: ["services-all"] });
+    },
+  });
+}
+
 // Blog posts
 export function useBlogPosts(publishedOnly = true) {
   return useQuery({

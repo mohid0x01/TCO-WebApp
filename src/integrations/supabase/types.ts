@@ -140,6 +140,57 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          features: string[]
+          icon: string
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          long_description: string | null
+          order_index: number
+          price: string
+          price_label: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string
+          features?: string[]
+          icon?: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          long_description?: string | null
+          order_index?: number
+          price?: string
+          price_label?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          features?: string[]
+          icon?: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          long_description?: string | null
+          order_index?: number
+          price?: string
+          price_label?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           content_type: string

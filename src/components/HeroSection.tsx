@@ -44,7 +44,7 @@ const HeroSection = () => {
           transition={{ delay: 0.4, duration: 0.7 }}
           className="font-display text-5xl sm:text-6xl md:text-8xl tracking-wider text-glow-blue text-primary mb-4"
         >
-          <GlitchText text={content?.hero_title || "TEAMCYBEROPS"} />
+          <GlitchText text={content?.hero_title || "TeamCyberØps"} />
         </motion.h1>
 
         <motion.p
