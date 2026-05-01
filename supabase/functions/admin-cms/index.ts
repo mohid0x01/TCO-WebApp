@@ -117,7 +117,7 @@ Deno.serve(async (req) => {
           ...(existing.data ? { id: existing.data.id } : {}),
         };
 
-        const { error } = await admin.from("projects").upsert(project, { onConflict: existing.data ? "id" : "name" });
+        const { error } = await admin.from("projects").upsert(project);
         if (error) throw error;
         synced++;
       }
