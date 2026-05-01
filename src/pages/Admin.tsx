@@ -4,8 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   useSiteContent,
   useAllProjects,
-  useTeamMembers,
-  useSocialLinks,
+  useAllTeamMembers,
+  useAllSocialLinks,
   useUpdateContent,
   useUpsertProject,
   useDeleteProject,
@@ -113,7 +113,7 @@ const MessageBadge = () => {
 const DashboardTab = () => {
   const { data: content } = useSiteContent();
   const { data: projects } = useAllProjects();
-  const { data: members } = useTeamMembers();
+  const { data: members } = useAllTeamMembers();
   const { data: msgs } = useContactMessages();
   const { data: posts } = useBlogPosts(false);
   const updateMut = useUpdateContent();
@@ -442,7 +442,7 @@ const BlogTab = () => {
 
 // ---- Team Tab ----
 const TeamTab = () => {
-  const { data: members, isLoading } = useTeamMembers();
+  const { data: members, isLoading } = useAllTeamMembers();
   const upsertMut = useUpsertTeamMember();
   const deleteMut = useDeleteTeamMember();
   const [editing, setEditing] = useState<any | null>(null);
@@ -498,7 +498,7 @@ const TeamTab = () => {
 
 // ---- Social Tab ----
 const SocialTab = () => {
-  const { data: links, isLoading } = useSocialLinks();
+  const { data: links, isLoading } = useAllSocialLinks();
   const upsertMut = useUpsertSocialLink();
   const deleteMut = useDeleteSocialLink();
   const [editing, setEditing] = useState<any | null>(null);
