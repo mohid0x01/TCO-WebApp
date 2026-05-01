@@ -142,8 +142,12 @@ export type Database = {
       }
       services: {
         Row: {
+          best_for: string
           category: string
+          comparison_level: string
           created_at: string
+          cta_label: string
+          deliverables: string[]
           description: string
           features: string[]
           icon: string
@@ -154,12 +158,18 @@ export type Database = {
           order_index: number
           price: string
           price_label: string | null
+          slug: string
+          timeline: string
           title: string
           updated_at: string
         }
         Insert: {
+          best_for?: string
           category?: string
+          comparison_level?: string
           created_at?: string
+          cta_label?: string
+          deliverables?: string[]
           description?: string
           features?: string[]
           icon?: string
@@ -170,12 +180,18 @@ export type Database = {
           order_index?: number
           price?: string
           price_label?: string | null
+          slug: string
+          timeline?: string
           title: string
           updated_at?: string
         }
         Update: {
+          best_for?: string
           category?: string
+          comparison_level?: string
           created_at?: string
+          cta_label?: string
+          deliverables?: string[]
           description?: string
           features?: string[]
           icon?: string
@@ -186,6 +202,8 @@ export type Database = {
           order_index?: number
           price?: string
           price_label?: string | null
+          slug?: string
+          timeline?: string
           title?: string
           updated_at?: string
         }
