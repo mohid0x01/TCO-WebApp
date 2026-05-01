@@ -11,7 +11,7 @@ const getAdminKey = () => {
   return fromUrl || sessionStorage.getItem("teamcyberops_admin_key") || "";
 };
 
-const adminRequest = async <T,>(action: string, table?: string, payload?: unknown, id?: string): Promise<T> => {
+const adminRequest = async (action: string, table?: string, payload?: unknown, id?: string): Promise<any> => {
   const adminKey = getAdminKey();
   if (!adminKey) throw new Error("Admin key missing");
   const { data, error } = await supabase.functions.invoke("admin-cms", {
@@ -148,6 +148,7 @@ export function useBlogPosts(publishedOnly = true) {
   return useQuery({
     queryKey: ["blog-posts", publishedOnly],
     queryFn: async () => {
+      if (!publishedOnly) return adminRequest("list", "blog_posts");
       let q = supabase.from("blog_posts").select("*").order("published_at", { ascending: false });
       if (publishedOnly) q = q.eq("is_published", true);
       const { data, error } = await q;
@@ -190,14 +191,7 @@ export function useContactMessages() {
 
   return useQuery({
     queryKey: ["contact-messages"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("contact_messages")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => adminRequest("list", "contact_messages"),
     staleTime: 10_000,
   });
 }
