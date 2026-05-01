@@ -263,10 +263,7 @@ export function useDeleteSocialLink() {
 export function useUpsertBlogPost() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (post: any) => {
-      const { error } = await supabase.from("blog_posts").upsert(post);
-      if (error) throw error;
-    },
+    mutationFn: (post: any) => adminRequest("upsert", "blog_posts", post),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["blog-posts"] }),
   });
 }
@@ -274,10 +271,7 @@ export function useUpsertBlogPost() {
 export function useDeleteBlogPost() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("blog_posts").delete().eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("delete", "blog_posts", undefined, id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["blog-posts"] }),
   });
 }
@@ -286,10 +280,7 @@ export function useDeleteBlogPost() {
 export function useMarkMessageRead() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("contact_messages").update({ is_read: true }).eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("mark_message_read", undefined, undefined, id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["contact-messages"] }),
   });
 }
@@ -297,10 +288,7 @@ export function useMarkMessageRead() {
 export function useDeleteMessage() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("contact_messages").delete().eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("delete", "contact_messages", undefined, id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["contact-messages"] }),
   });
 }
