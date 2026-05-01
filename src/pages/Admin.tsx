@@ -560,11 +560,14 @@ const ServicesTab = () => {
   const deleteMut = useDeleteService();
   const [editing, setEditing] = useState<any | null>(null);
 
+  const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
   if (isLoading) return <Loading />;
 
   const newService = () => setEditing({
-    title: "", description: "", long_description: "", price: "Contact Us", price_label: "Starting from",
+    title: "", slug: "", description: "", long_description: "", price: "Contact Us", price_label: "Starting from",
     icon: "shield", features: [], category: "Security", is_featured: false, is_active: true,
+    timeline: "Custom timeline", best_for: "Teams needing verified security coverage", deliverables: [], comparison_level: "Standard", cta_label: "Get Quote",
     order_index: (services?.length || 0) + 1,
   });
 
@@ -579,24 +582,30 @@ const ServicesTab = () => {
         <div className="glass-card rounded-xl p-6 gradient-border space-y-4">
           <h3 className="font-display text-lg text-primary">{editing.id ? "Edit" : "New"} Service</h3>
           {[
-            { key: "title", label: "Title" }, { key: "description", label: "Description" },
+            { key: "title", label: "Title" }, { key: "slug", label: "Slug (/services/slug)" }, { key: "description", label: "Description" },
             { key: "long_description", label: "Long Description", type: "textarea" },
             { key: "price", label: "Price" }, { key: "price_label", label: "Price Label (e.g. Starting from)" },
             { key: "icon", label: "Icon (shield/search/clipboard/alert-triangle/target/book-open)" },
-            { key: "category", label: "Category" },
+            { key: "category", label: "Category" }, { key: "timeline", label: "Timeline" },
+            { key: "best_for", label: "Best For" }, { key: "comparison_level", label: "Comparison Level" },
+            { key: "cta_label", label: "CTA Label" },
           ].map((f) => (
             <div key={f.key}>
               <label className="font-mono-terminal text-[10px] text-muted-foreground uppercase tracking-wider block mb-1">{f.label}</label>
               {f.type === "textarea" ? (
                 <textarea value={editing[f.key] || ""} onChange={(e) => setEditing((prev: any) => ({ ...prev, [f.key]: e.target.value }))} rows={3} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50 resize-none" />
               ) : (
-                <input value={editing[f.key] || ""} onChange={(e) => setEditing((prev: any) => ({ ...prev, [f.key]: e.target.value }))} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
+                <input value={editing[f.key] || ""} onChange={(e) => setEditing((prev: any) => ({ ...prev, [f.key]: e.target.value, ...(f.key === "title" && !prev.id ? { slug: slugify(e.target.value) } : {}) }))} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
               )}
             </div>
           ))}
           <div>
             <label className="font-mono-terminal text-[10px] text-muted-foreground uppercase tracking-wider block mb-1">Features (comma separated)</label>
             <input value={(editing.features || []).join(", ")} onChange={(e) => setEditing((prev: any) => ({ ...prev, features: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) }))} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
+          </div>
+          <div>
+            <label className="font-mono-terminal text-[10px] text-muted-foreground uppercase tracking-wider block mb-1">Deliverables (comma separated)</label>
+            <input value={(editing.deliverables || []).join(", ")} onChange={(e) => setEditing((prev: any) => ({ ...prev, deliverables: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) }))} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
           </div>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 cursor-pointer">
