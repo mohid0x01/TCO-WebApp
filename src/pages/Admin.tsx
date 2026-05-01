@@ -26,17 +26,19 @@ import {
 } from "@/hooks/use-cms";
 import CyberBackground3D from "@/components/CyberBackground3D";
 
-const ADMIN_KEY = "teamcyberops2024";
-
 type TabId = "dashboard" | "content" | "projects" | "team" | "social" | "blog" | "messages" | "services";
 
 const Admin = () => {
   const [params] = useSearchParams();
   const [authed, setAuthed] = useState(false);
+  const [keyInput, setKeyInput] = useState("");
   const [tab, setTab] = useState<TabId>("dashboard");
 
   useEffect(() => {
-    if (params.get("key") === ADMIN_KEY) setAuthed(true);
+    const urlKey = params.get("key") || "";
+    const storedKey = sessionStorage.getItem("teamcyberops_admin_key") || "";
+    if (urlKey) sessionStorage.setItem("teamcyberops_admin_key", urlKey);
+    if (urlKey || storedKey) setAuthed(true);
   }, [params]);
 
   if (!authed) {
@@ -46,6 +48,10 @@ const Admin = () => {
         <div className="relative z-10 glass-card rounded-2xl p-8 max-w-md w-full gradient-border text-center">
           <h1 className="font-display text-3xl text-primary text-glow-blue mb-4">ACCESS DENIED</h1>
           <p className="text-muted-foreground font-mono-terminal text-sm">Invalid or missing access key.</p>
+          <div className="mt-6 flex gap-2">
+            <input value={keyInput} onChange={(e) => setKeyInput(e.target.value)} placeholder="admin key" className="flex-1 bg-background/60 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
+            <button onClick={() => { if (keyInput.trim()) { sessionStorage.setItem("teamcyberops_admin_key", keyInput.trim()); setAuthed(true); } }} className="font-mono-terminal text-xs px-4 py-2 bg-primary/20 text-primary border border-primary/40 rounded-lg hover:bg-primary/30 transition-all">Unlock</button>
+          </div>
         </div>
       </div>
     );
