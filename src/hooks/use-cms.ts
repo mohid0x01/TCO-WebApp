@@ -4,6 +4,25 @@ import { useEffect } from "react";
 
 export type SiteContent = Record<string, string>;
 
+const getAdminKey = () => {
+  if (typeof window === "undefined") return "";
+  const fromUrl = new URLSearchParams(window.location.search).get("key") || "";
+  if (fromUrl) sessionStorage.setItem("teamcyberops_admin_key", fromUrl);
+  return fromUrl || sessionStorage.getItem("teamcyberops_admin_key") || "";
+};
+
+const adminRequest = async (action: string, table?: string, payload?: unknown, id?: string): Promise<any> => {
+  const adminKey = getAdminKey();
+  if (!adminKey) throw new Error("Admin key missing");
+  const { data, error } = await supabase.functions.invoke("admin-cms", {
+    body: { action, table, payload, id },
+    headers: { "x-admin-key": adminKey },
+  });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  return data?.data ?? data;
+};
+
 export function useSiteContent() {
   return useQuery({
     queryKey: ["site-content"],
@@ -40,14 +59,7 @@ export function useProjects() {
 export function useAllProjects() {
   return useQuery({
     queryKey: ["projects-all"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .order("order_index");
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => adminRequest("list", "projects"),
     staleTime: 60_000,
   });
 }
@@ -68,6 +80,14 @@ export function useTeamMembers() {
   });
 }
 
+export function useAllTeamMembers() {
+  return useQuery({
+    queryKey: ["team-members-all"],
+    queryFn: () => adminRequest("list", "team_members"),
+    staleTime: 60_000,
+  });
+}
+
 export function useSocialLinks() {
   return useQuery({
     queryKey: ["social-links"],
@@ -80,6 +100,14 @@ export function useSocialLinks() {
       if (error) throw error;
       return data;
     },
+    staleTime: 60_000,
+  });
+}
+
+export function useAllSocialLinks() {
+  return useQuery({
+    queryKey: ["social-links-all"],
+    queryFn: () => adminRequest("list", "social_links"),
     staleTime: 60_000,
   });
 }
@@ -101,17 +129,27 @@ export function useServices() {
   });
 }
 
-export function useAllServices() {
+export function useService(slug: string) {
   return useQuery({
-    queryKey: ["services-all"],
+    queryKey: ["service", slug],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("services")
         .select("*")
-        .order("order_index");
+        .eq("slug", slug)
+        .eq("is_active", true)
+        .single();
       if (error) throw error;
       return data;
     },
+    enabled: !!slug,
+  });
+}
+
+export function useAllServices() {
+  return useQuery({
+    queryKey: ["services-all"],
+    queryFn: () => adminRequest("list", "services"),
     staleTime: 60_000,
   });
 }
@@ -119,10 +157,7 @@ export function useAllServices() {
 export function useUpsertService() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (service: any) => {
-      const { error } = await supabase.from("services").upsert(service);
-      if (error) throw error;
-    },
+    mutationFn: (service: any) => adminRequest("upsert", "services", service),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["services"] });
       qc.invalidateQueries({ queryKey: ["services-all"] });
@@ -133,10 +168,7 @@ export function useUpsertService() {
 export function useDeleteService() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("services").delete().eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("delete", "services", undefined, id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["services"] });
       qc.invalidateQueries({ queryKey: ["services-all"] });
@@ -149,6 +181,7 @@ export function useBlogPosts(publishedOnly = true) {
   return useQuery({
     queryKey: ["blog-posts", publishedOnly],
     queryFn: async () => {
+      if (!publishedOnly) return adminRequest("list", "blog_posts");
       let q = supabase.from("blog_posts").select("*").order("published_at", { ascending: false });
       if (publishedOnly) q = q.eq("is_published", true);
       const { data, error } = await q;
@@ -191,14 +224,8 @@ export function useContactMessages() {
 
   return useQuery({
     queryKey: ["contact-messages"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("contact_messages")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => adminRequest("list", "contact_messages"),
+    refetchInterval: 5_000,
     staleTime: 10_000,
   });
 }
@@ -207,10 +234,7 @@ export function useContactMessages() {
 export function useUpdateContent() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ key, value }: { key: string; value: string }) => {
-      const { error } = await supabase.from("site_content").update({ value }).eq("key", key);
-      if (error) throw error;
-    },
+    mutationFn: ({ key, value }: { key: string; value: string }) => adminRequest("update_content", undefined, { key, value }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["site-content"] }),
   });
 }
@@ -218,66 +242,66 @@ export function useUpdateContent() {
 export function useUpsertProject() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (project: any) => {
-      const { error } = await supabase.from("projects").upsert(project);
-      if (error) throw error;
+    mutationFn: (project: any) => adminRequest("upsert", "projects", project),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      qc.invalidateQueries({ queryKey: ["projects-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
   });
 }
 
 export function useDeleteProject() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("projects").delete().eq("id", id);
-      if (error) throw error;
+    mutationFn: (id: string) => adminRequest("delete", "projects", undefined, id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      qc.invalidateQueries({ queryKey: ["projects-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
   });
 }
 
 export function useUpsertTeamMember() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (member: any) => {
-      const { error } = await supabase.from("team_members").upsert(member);
-      if (error) throw error;
+    mutationFn: (member: any) => adminRequest("upsert", "team_members", member),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["team-members"] });
+      qc.invalidateQueries({ queryKey: ["team-members-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["team-members"] }),
   });
 }
 
 export function useDeleteTeamMember() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("team_members").delete().eq("id", id);
-      if (error) throw error;
+    mutationFn: (id: string) => adminRequest("delete", "team_members", undefined, id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["team-members"] });
+      qc.invalidateQueries({ queryKey: ["team-members-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["team-members"] }),
   });
 }
 
 export function useUpsertSocialLink() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (link: any) => {
-      const { error } = await supabase.from("social_links").upsert(link);
-      if (error) throw error;
+    mutationFn: (link: any) => adminRequest("upsert", "social_links", link),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["social-links"] });
+      qc.invalidateQueries({ queryKey: ["social-links-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["social-links"] }),
   });
 }
 
 export function useDeleteSocialLink() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("social_links").delete().eq("id", id);
-      if (error) throw error;
+    mutationFn: (id: string) => adminRequest("delete", "social_links", undefined, id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["social-links"] });
+      qc.invalidateQueries({ queryKey: ["social-links-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["social-links"] }),
   });
 }
 
@@ -285,10 +309,7 @@ export function useDeleteSocialLink() {
 export function useUpsertBlogPost() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (post: any) => {
-      const { error } = await supabase.from("blog_posts").upsert(post);
-      if (error) throw error;
-    },
+    mutationFn: (post: any) => adminRequest("upsert", "blog_posts", post),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["blog-posts"] }),
   });
 }
@@ -296,10 +317,7 @@ export function useUpsertBlogPost() {
 export function useDeleteBlogPost() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("blog_posts").delete().eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("delete", "blog_posts", undefined, id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["blog-posts"] }),
   });
 }
@@ -308,10 +326,7 @@ export function useDeleteBlogPost() {
 export function useMarkMessageRead() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("contact_messages").update({ is_read: true }).eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("mark_message_read", undefined, undefined, id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["contact-messages"] }),
   });
 }
@@ -319,10 +334,7 @@ export function useMarkMessageRead() {
 export function useDeleteMessage() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("contact_messages").delete().eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("delete", "contact_messages", undefined, id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["contact-messages"] }),
   });
 }
@@ -331,38 +343,10 @@ export function useDeleteMessage() {
 export function useSyncGitHub() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async () => {
-      const res = await fetch("https://api.github.com/users/mohidqx/repos?per_page=100&sort=updated");
-      if (!res.ok) throw new Error("GitHub API error");
-      const repos = await res.json();
-      
-      for (const repo of repos) {
-        if (repo.fork) continue;
-        const existing = await supabase
-          .from("projects")
-          .select("id, is_auto_synced")
-          .eq("name", repo.name)
-          .maybeSingle();
-        
-        if (existing.data && !existing.data.is_auto_synced) continue;
-        
-        const project = {
-          name: repo.name,
-          description: repo.description || "No description available.",
-          long_description: repo.description || "No detailed description available.",
-          tech: [repo.language || "Unknown"].filter(Boolean),
-          github_url: repo.html_url,
-          language: repo.language || "Unknown",
-          category: "Tools",
-          stars: repo.stargazers_count || 0,
-          is_auto_synced: true,
-          is_visible: true,
-          ...(existing.data ? { id: existing.data.id } : {}),
-        };
-        
-        await supabase.from("projects").upsert(project, { onConflict: "id" });
-      }
+    mutationFn: () => adminRequest("sync_github"),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      qc.invalidateQueries({ queryKey: ["projects-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
   });
 }

@@ -4,8 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   useSiteContent,
   useAllProjects,
-  useTeamMembers,
-  useSocialLinks,
+  useAllTeamMembers,
+  useAllSocialLinks,
   useUpdateContent,
   useUpsertProject,
   useDeleteProject,
@@ -26,17 +26,19 @@ import {
 } from "@/hooks/use-cms";
 import CyberBackground3D from "@/components/CyberBackground3D";
 
-const ADMIN_KEY = "teamcyberops2024";
-
 type TabId = "dashboard" | "content" | "projects" | "team" | "social" | "blog" | "messages" | "services";
 
 const Admin = () => {
   const [params] = useSearchParams();
   const [authed, setAuthed] = useState(false);
+  const [keyInput, setKeyInput] = useState("");
   const [tab, setTab] = useState<TabId>("dashboard");
 
   useEffect(() => {
-    if (params.get("key") === ADMIN_KEY) setAuthed(true);
+    const urlKey = params.get("key") || "";
+    const storedKey = sessionStorage.getItem("teamcyberops_admin_key") || "";
+    if (urlKey) sessionStorage.setItem("teamcyberops_admin_key", urlKey);
+    if (urlKey || storedKey) setAuthed(true);
   }, [params]);
 
   if (!authed) {
@@ -46,6 +48,10 @@ const Admin = () => {
         <div className="relative z-10 glass-card rounded-2xl p-8 max-w-md w-full gradient-border text-center">
           <h1 className="font-display text-3xl text-primary text-glow-blue mb-4">ACCESS DENIED</h1>
           <p className="text-muted-foreground font-mono-terminal text-sm">Invalid or missing access key.</p>
+          <div className="mt-6 flex gap-2">
+            <input value={keyInput} onChange={(e) => setKeyInput(e.target.value)} placeholder="admin key" className="flex-1 bg-background/60 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
+            <button onClick={() => { if (keyInput.trim()) { sessionStorage.setItem("teamcyberops_admin_key", keyInput.trim()); setAuthed(true); } }} className="font-mono-terminal text-xs px-4 py-2 bg-primary/20 text-primary border border-primary/40 rounded-lg hover:bg-primary/30 transition-all">Unlock</button>
+          </div>
         </div>
       </div>
     );
@@ -113,7 +119,7 @@ const MessageBadge = () => {
 const DashboardTab = () => {
   const { data: content } = useSiteContent();
   const { data: projects } = useAllProjects();
-  const { data: members } = useTeamMembers();
+  const { data: members } = useAllTeamMembers();
   const { data: msgs } = useContactMessages();
   const { data: posts } = useBlogPosts(false);
   const updateMut = useUpdateContent();
@@ -442,7 +448,7 @@ const BlogTab = () => {
 
 // ---- Team Tab ----
 const TeamTab = () => {
-  const { data: members, isLoading } = useTeamMembers();
+  const { data: members, isLoading } = useAllTeamMembers();
   const upsertMut = useUpsertTeamMember();
   const deleteMut = useDeleteTeamMember();
   const [editing, setEditing] = useState<any | null>(null);
@@ -498,7 +504,7 @@ const TeamTab = () => {
 
 // ---- Social Tab ----
 const SocialTab = () => {
-  const { data: links, isLoading } = useSocialLinks();
+  const { data: links, isLoading } = useAllSocialLinks();
   const upsertMut = useUpsertSocialLink();
   const deleteMut = useDeleteSocialLink();
   const [editing, setEditing] = useState<any | null>(null);
@@ -554,11 +560,14 @@ const ServicesTab = () => {
   const deleteMut = useDeleteService();
   const [editing, setEditing] = useState<any | null>(null);
 
+  const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
   if (isLoading) return <Loading />;
 
   const newService = () => setEditing({
-    title: "", description: "", long_description: "", price: "Contact Us", price_label: "Starting from",
+    title: "", slug: "", description: "", long_description: "", price: "Contact Us", price_label: "Starting from",
     icon: "shield", features: [], category: "Security", is_featured: false, is_active: true,
+    timeline: "Custom timeline", best_for: "Teams needing verified security coverage", deliverables: [], comparison_level: "Standard", cta_label: "Get Quote",
     order_index: (services?.length || 0) + 1,
   });
 
@@ -573,24 +582,30 @@ const ServicesTab = () => {
         <div className="glass-card rounded-xl p-6 gradient-border space-y-4">
           <h3 className="font-display text-lg text-primary">{editing.id ? "Edit" : "New"} Service</h3>
           {[
-            { key: "title", label: "Title" }, { key: "description", label: "Description" },
+            { key: "title", label: "Title" }, { key: "slug", label: "Slug (/services/slug)" }, { key: "description", label: "Description" },
             { key: "long_description", label: "Long Description", type: "textarea" },
             { key: "price", label: "Price" }, { key: "price_label", label: "Price Label (e.g. Starting from)" },
             { key: "icon", label: "Icon (shield/search/clipboard/alert-triangle/target/book-open)" },
-            { key: "category", label: "Category" },
+            { key: "category", label: "Category" }, { key: "timeline", label: "Timeline" },
+            { key: "best_for", label: "Best For" }, { key: "comparison_level", label: "Comparison Level" },
+            { key: "cta_label", label: "CTA Label" },
           ].map((f) => (
             <div key={f.key}>
               <label className="font-mono-terminal text-[10px] text-muted-foreground uppercase tracking-wider block mb-1">{f.label}</label>
               {f.type === "textarea" ? (
                 <textarea value={editing[f.key] || ""} onChange={(e) => setEditing((prev: any) => ({ ...prev, [f.key]: e.target.value }))} rows={3} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50 resize-none" />
               ) : (
-                <input value={editing[f.key] || ""} onChange={(e) => setEditing((prev: any) => ({ ...prev, [f.key]: e.target.value }))} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
+                <input value={editing[f.key] || ""} onChange={(e) => setEditing((prev: any) => ({ ...prev, [f.key]: e.target.value, ...(f.key === "title" && !prev.id ? { slug: slugify(e.target.value) } : {}) }))} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
               )}
             </div>
           ))}
           <div>
             <label className="font-mono-terminal text-[10px] text-muted-foreground uppercase tracking-wider block mb-1">Features (comma separated)</label>
             <input value={(editing.features || []).join(", ")} onChange={(e) => setEditing((prev: any) => ({ ...prev, features: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) }))} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
+          </div>
+          <div>
+            <label className="font-mono-terminal text-[10px] text-muted-foreground uppercase tracking-wider block mb-1">Deliverables (comma separated)</label>
+            <input value={(editing.deliverables || []).join(", ")} onChange={(e) => setEditing((prev: any) => ({ ...prev, deliverables: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) }))} className="w-full bg-background/50 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
           </div>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 cursor-pointer">
