@@ -264,7 +264,10 @@ export function useUpsertTeamMember() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (member: any) => adminRequest("upsert", "team_members", member),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["team-members"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["team-members"] });
+      qc.invalidateQueries({ queryKey: ["team-members-all"] });
+    },
   });
 }
 
@@ -272,7 +275,10 @@ export function useDeleteTeamMember() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => adminRequest("delete", "team_members", undefined, id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["team-members"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["team-members"] });
+      qc.invalidateQueries({ queryKey: ["team-members-all"] });
+    },
   });
 }
 
@@ -280,7 +286,10 @@ export function useUpsertSocialLink() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (link: any) => adminRequest("upsert", "social_links", link),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["social-links"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["social-links"] });
+      qc.invalidateQueries({ queryKey: ["social-links-all"] });
+    },
   });
 }
 
@@ -288,7 +297,10 @@ export function useDeleteSocialLink() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => adminRequest("delete", "social_links", undefined, id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["social-links"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["social-links"] });
+      qc.invalidateQueries({ queryKey: ["social-links-all"] });
+    },
   });
 }
 
