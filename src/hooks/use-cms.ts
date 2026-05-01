@@ -80,6 +80,14 @@ export function useTeamMembers() {
   });
 }
 
+export function useAllTeamMembers() {
+  return useQuery({
+    queryKey: ["team-members-all"],
+    queryFn: () => adminRequest("list", "team_members"),
+    staleTime: 60_000,
+  });
+}
+
 export function useSocialLinks() {
   return useQuery({
     queryKey: ["social-links"],
@@ -92,6 +100,14 @@ export function useSocialLinks() {
       if (error) throw error;
       return data;
     },
+    staleTime: 60_000,
+  });
+}
+
+export function useAllSocialLinks() {
+  return useQuery({
+    queryKey: ["social-links-all"],
+    queryFn: () => adminRequest("list", "social_links"),
     staleTime: 60_000,
   });
 }
