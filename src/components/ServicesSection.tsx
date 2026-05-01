@@ -1,7 +1,8 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Shield, Search, ClipboardList, AlertTriangle, Target, BookOpen, ChevronRight } from "lucide-react";
 import { useServices } from "@/hooks/use-cms";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const iconMap: Record<string, React.ElementType> = {
   shield: Shield,
@@ -15,10 +16,15 @@ const iconMap: Record<string, React.ElementType> = {
 const ServicesSection = () => {
   const { data: services } = useServices();
   const [expanded, setExpanded] = useState<string | null>(null);
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
 
   return (
-    <section id="services" className="relative py-24 px-4 overflow-hidden">
+    <section id="services" ref={ref} className="relative py-24 px-4 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
+      <motion.div style={{ y }} className="absolute left-[8%] top-24 h-28 w-28 rotate-45 border border-primary/15 bg-primary/5 hidden md:block" />
+      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [-60, 90]) }} className="absolute right-[10%] bottom-28 h-20 w-20 rounded-full border border-neon-green/15 bg-neon-green/5 hidden md:block" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
@@ -50,8 +56,11 @@ const ServicesSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
+                whileHover={{ y: -10, rotateX: 4, rotateY: i % 2 ? -2 : 2 }}
                 className={`group relative glass-card rounded-2xl overflow-hidden gradient-border transition-all duration-500 ${service.is_featured ? "ring-1 ring-primary/20" : ""}`}
+                style={{ transformStyle: "preserve-3d" }}
               >
+                <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full border border-primary/10 bg-primary/5 transition-transform duration-500 group-hover:translate-z-8 group-hover:scale-125" />
                 {service.is_featured && (
                   <div className="absolute top-0 right-0 px-3 py-1 bg-primary/20 text-primary font-mono-terminal text-[9px] tracking-wider rounded-bl-xl border-b border-l border-primary/20">
                     FEATURED
@@ -114,6 +123,9 @@ const ServicesSection = () => {
                   >
                     Get Quote →
                   </a>
+                  <Link to={`/services/${service.slug}`} className="block w-full text-center font-mono-terminal text-xs tracking-wider uppercase py-3 mt-2 rounded-xl text-muted-foreground hover:text-primary transition-all duration-300">
+                    View Details
+                  </Link>
                 </div>
               </motion.div>
             );
