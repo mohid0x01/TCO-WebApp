@@ -14,6 +14,7 @@ const navLinks = [
 
 const pageLinks = [
   { label: "Tools", href: "/tools" },
+  { label: "Services", href: "/services" },
   { label: "Blog", href: "/blog" },
 ];
 

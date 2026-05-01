@@ -2,6 +2,22 @@
 
 All notable changes to TeamCyberØps are documented here.
 
+## [1.4.0] — 2026-05-01
+
+### Added
+- `/services` pricing page with comparison table inspired by the provided pricing layout
+- `/services/:slug` individual service detail pages
+- Extra parallax/WebGL-style depth effects on service cards
+- Hero logo flip effect using the badge front and skull back
+- Protected admin backend function for Zero Leak CMS operations
+
+### Changed
+- Admin panel data management now runs through a secret-key backend layer instead of direct browser table writes
+- Services admin form now manages slug, timeline, best-for, deliverables, comparison level, and CTA label
+
+### Fixed
+- Admin panel access and CRUD flow after restrictive RLS hardening
+
 ## [1.3.0] — 2026-04-11
 
 ### Added

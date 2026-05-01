@@ -22,10 +22,10 @@ TeamCyberØps is a full-stack cybersecurity platform built with React, Three.js,
 
 - **CMS Dashboard** — Every text, stat, and piece of content is manageable via the admin panel
 - **3D WebGL Background** — Rotating wireframe globe, DNA helix, octahedrons, particle field, and grid floor
-- **Services & Pricing** — Cybersecurity services with features, pricing, and admin CRUD
+- **Services & Pricing** — Homepage service cards, `/services` pricing page, service detail routes, comparison table, and admin CRUD
 - **Blog System** — Full blog with slug-based routing, cover images, tags, and rich content
 - **GitHub Auto-Sync** — Repos from `github.com/mohidqx` auto-create project cards
-- **Real-time Messages** — Contact form submissions appear instantly in admin
+- **Zero Leak Admin Layer** — Admin CRUD and private messages are routed through a protected backend function
 - **Team Management** — Add/edit team members with avatars, roles, clearance levels
 - **Social Links** — Dynamic social bar managed from admin
 - **Logo Flip Animation** — 3D flip on the badge in WHO WE ARE section
@@ -51,6 +51,8 @@ src/
 |-------|------------|
 | `/` | Landing page with all sections |
 | `/tools` | Filterable arsenal page with project details |
+| `/services` | Detailed services pricing page with comparison table |
+| `/services/:slug` | Individual service detail page |
 | `/blog` | Blog listing page |
 | `/blog/:slug` | Individual blog post |
 | `/terms` | Terms & Conditions |
@@ -64,7 +66,7 @@ src/
 - `social_links` — Social platform links
 - `blog_posts` — Blog articles
 - `contact_messages` — Contact form submissions (realtime)
-- `services` — Cybersecurity service offerings with pricing
+- `services` — Cybersecurity service offerings with pricing, slugs, timelines, deliverables, and comparison metadata
 
 ## Getting Started
 

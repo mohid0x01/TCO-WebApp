@@ -19,12 +19,13 @@ const ServicesSection = () => {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
+  const orbY = useTransform(scrollYProgress, [0, 1], [-60, 90]);
 
   return (
     <section id="services" ref={ref} className="relative py-24 px-4 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
       <motion.div style={{ y }} className="absolute left-[8%] top-24 h-28 w-28 rotate-45 border border-primary/15 bg-primary/5 hidden md:block" />
-      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [-60, 90]) }} className="absolute right-[10%] bottom-28 h-20 w-20 rounded-full border border-neon-green/15 bg-neon-green/5 hidden md:block" />
+      <motion.div style={{ y: orbY }} className="absolute right-[10%] bottom-28 h-20 w-20 rounded-full border border-neon-green/15 bg-neon-green/5 hidden md:block" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
