@@ -113,6 +113,23 @@ export function useServices() {
   });
 }
 
+export function useService(slug: string) {
+  return useQuery({
+    queryKey: ["service", slug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("*")
+        .eq("slug", slug)
+        .eq("is_active", true)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!slug,
+  });
+}
+
 export function useAllServices() {
   return useQuery({
     queryKey: ["services-all"],
