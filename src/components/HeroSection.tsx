@@ -1,12 +1,15 @@
 import { motion } from "framer-motion";
 import badge from "@/assets/teamcyberops-badge.jpeg";
+import skullBack from "@/assets/skull-back.png";
 import ParticleBackground from "./ParticleBackground";
 import GlitchText from "./GlitchText";
 import TypingText from "./TypingText";
 import { useSiteContent } from "@/hooks/use-cms";
+import { useState } from "react";
 
 const HeroSection = () => {
   const { data: content } = useSiteContent();
+  const [flipped, setFlipped] = useState(false);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -26,15 +29,12 @@ const HeroSection = () => {
           transition={{ duration: 1, ease: "easeOut" }}
           className="mb-10"
         >
-          <div className="relative inline-block">
+          <div className="relative inline-block w-36 h-36 md:w-48 md:h-48" style={{ perspective: "1100px" }} onMouseEnter={() => setFlipped(true)} onMouseLeave={() => setFlipped(false)} onClick={() => setFlipped((v) => !v)}>
             <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl scale-110" />
-            <img
-              src={badge}
-              alt="TeamCyberOps Badge"
-              width={512}
-              height={512}
-              className="relative w-36 h-36 md:w-48 md:h-48 mx-auto rounded-full ring-2 ring-primary/30 shadow-2xl shadow-primary/20 animate-float"
-            />
+            <motion.div className="relative w-full h-full animate-float cursor-pointer" style={{ transformStyle: "preserve-3d" }} animate={{ rotateY: flipped ? 180 : 0 }} transition={{ duration: 0.7, ease: "easeInOut" }}>
+              <img src={badge} alt="TeamCyberOps Badge" width={512} height={512} className="absolute inset-0 w-full h-full rounded-full ring-2 ring-primary/30 shadow-2xl shadow-primary/20 object-cover backface-hidden" />
+              <img src={skullBack} alt="TeamCyberOps alternate mark" width={512} height={512} className="absolute inset-0 w-full h-full rounded-full ring-2 ring-neon-red/40 shadow-2xl shadow-neon-red/20 object-cover backface-hidden" style={{ transform: "rotateY(180deg)" }} />
+            </motion.div>
           </div>
         </motion.div>
 
