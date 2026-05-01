@@ -200,10 +200,7 @@ export function useContactMessages() {
 export function useUpdateContent() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ key, value }: { key: string; value: string }) => {
-      const { error } = await supabase.from("site_content").update({ value }).eq("key", key);
-      if (error) throw error;
-    },
+    mutationFn: ({ key, value }: { key: string; value: string }) => adminRequest("update_content", undefined, { key, value }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["site-content"] }),
   });
 }
@@ -211,22 +208,22 @@ export function useUpdateContent() {
 export function useUpsertProject() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (project: any) => {
-      const { error } = await supabase.from("projects").upsert(project);
-      if (error) throw error;
+    mutationFn: (project: any) => adminRequest("upsert", "projects", project),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      qc.invalidateQueries({ queryKey: ["projects-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
   });
 }
 
 export function useDeleteProject() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("projects").delete().eq("id", id);
-      if (error) throw error;
+    mutationFn: (id: string) => adminRequest("delete", "projects", undefined, id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      qc.invalidateQueries({ queryKey: ["projects-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
   });
 }
 
