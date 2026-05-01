@@ -59,14 +59,7 @@ export function useProjects() {
 export function useAllProjects() {
   return useQuery({
     queryKey: ["projects-all"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .order("order_index");
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => adminRequest("list", "projects"),
     staleTime: 60_000,
   });
 }
@@ -123,14 +116,7 @@ export function useServices() {
 export function useAllServices() {
   return useQuery({
     queryKey: ["services-all"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("services")
-        .select("*")
-        .order("order_index");
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => adminRequest("list", "services"),
     staleTime: 60_000,
   });
 }
@@ -138,10 +124,7 @@ export function useAllServices() {
 export function useUpsertService() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (service: any) => {
-      const { error } = await supabase.from("services").upsert(service);
-      if (error) throw error;
-    },
+    mutationFn: (service: any) => adminRequest("upsert", "services", service),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["services"] });
       qc.invalidateQueries({ queryKey: ["services-all"] });
@@ -152,10 +135,7 @@ export function useUpsertService() {
 export function useDeleteService() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("services").delete().eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("delete", "services", undefined, id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["services"] });
       qc.invalidateQueries({ queryKey: ["services-all"] });
