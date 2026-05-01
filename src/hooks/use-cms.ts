@@ -4,6 +4,25 @@ import { useEffect } from "react";
 
 export type SiteContent = Record<string, string>;
 
+const getAdminKey = () => {
+  if (typeof window === "undefined") return "";
+  const fromUrl = new URLSearchParams(window.location.search).get("key") || "";
+  if (fromUrl) sessionStorage.setItem("teamcyberops_admin_key", fromUrl);
+  return fromUrl || sessionStorage.getItem("teamcyberops_admin_key") || "";
+};
+
+const adminRequest = async <T,>(action: string, table?: string, payload?: unknown, id?: string): Promise<T> => {
+  const adminKey = getAdminKey();
+  if (!adminKey) throw new Error("Admin key missing");
+  const { data, error } = await supabase.functions.invoke("admin-cms", {
+    body: { action, table, payload, id },
+    headers: { "x-admin-key": adminKey },
+  });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  return data?.data ?? data;
+};
+
 export function useSiteContent() {
   return useQuery({
     queryKey: ["site-content"],
