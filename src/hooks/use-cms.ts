@@ -230,10 +230,7 @@ export function useDeleteProject() {
 export function useUpsertTeamMember() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (member: any) => {
-      const { error } = await supabase.from("team_members").upsert(member);
-      if (error) throw error;
-    },
+    mutationFn: (member: any) => adminRequest("upsert", "team_members", member),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["team-members"] }),
   });
 }
@@ -241,10 +238,7 @@ export function useUpsertTeamMember() {
 export function useDeleteTeamMember() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("team_members").delete().eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("delete", "team_members", undefined, id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["team-members"] }),
   });
 }
@@ -252,10 +246,7 @@ export function useDeleteTeamMember() {
 export function useUpsertSocialLink() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (link: any) => {
-      const { error } = await supabase.from("social_links").upsert(link);
-      if (error) throw error;
-    },
+    mutationFn: (link: any) => adminRequest("upsert", "social_links", link),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["social-links"] }),
   });
 }
@@ -263,10 +254,7 @@ export function useUpsertSocialLink() {
 export function useDeleteSocialLink() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("social_links").delete().eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (id: string) => adminRequest("delete", "social_links", undefined, id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["social-links"] }),
   });
 }
