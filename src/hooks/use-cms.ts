@@ -225,6 +225,7 @@ export function useContactMessages() {
   return useQuery({
     queryKey: ["contact-messages"],
     queryFn: () => adminRequest("list", "contact_messages"),
+    refetchInterval: 5_000,
     staleTime: 10_000,
   });
 }
