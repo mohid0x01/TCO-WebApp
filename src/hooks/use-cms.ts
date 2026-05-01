@@ -297,38 +297,10 @@ export function useDeleteMessage() {
 export function useSyncGitHub() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async () => {
-      const res = await fetch("https://api.github.com/users/mohidqx/repos?per_page=100&sort=updated");
-      if (!res.ok) throw new Error("GitHub API error");
-      const repos = await res.json();
-      
-      for (const repo of repos) {
-        if (repo.fork) continue;
-        const existing = await supabase
-          .from("projects")
-          .select("id, is_auto_synced")
-          .eq("name", repo.name)
-          .maybeSingle();
-        
-        if (existing.data && !existing.data.is_auto_synced) continue;
-        
-        const project = {
-          name: repo.name,
-          description: repo.description || "No description available.",
-          long_description: repo.description || "No detailed description available.",
-          tech: [repo.language || "Unknown"].filter(Boolean),
-          github_url: repo.html_url,
-          language: repo.language || "Unknown",
-          category: "Tools",
-          stars: repo.stargazers_count || 0,
-          is_auto_synced: true,
-          is_visible: true,
-          ...(existing.data ? { id: existing.data.id } : {}),
-        };
-        
-        await supabase.from("projects").upsert(project, { onConflict: "id" });
-      }
+    mutationFn: () => adminRequest("sync_github"),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      qc.invalidateQueries({ queryKey: ["projects-all"] });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
   });
 }
