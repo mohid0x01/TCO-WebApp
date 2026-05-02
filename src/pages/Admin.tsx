@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -92,7 +92,7 @@ const Admin = () => {
     return () => { cancelled = true; };
   }, [params]);
 
-  const handleUnlock = async (event?: React.FormEvent) => {
+  const handleUnlock = async (event?: FormEvent) => {
     event?.preventDefault();
     const candidate = keyInput.trim();
     if (!candidate) {
