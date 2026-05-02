@@ -23,37 +23,142 @@ import {
   useAllServices,
   useUpsertService,
   useDeleteService,
+  validateAdminKey,
 } from "@/hooks/use-cms";
 import CyberBackground3D from "@/components/CyberBackground3D";
 
 type TabId = "dashboard" | "content" | "projects" | "team" | "social" | "blog" | "messages" | "services";
+type AccessState = "checking" | "locked" | "unlocked";
+
+const ADMIN_SESSION_KEY = "teamcyberops_admin_session";
+const LEGACY_ADMIN_KEY = "teamcyberops_admin_key";
+const SESSION_TTL = 1000 * 60 * 60 * 12;
+
+const readStoredAdminKey = () => {
+  try {
+    const raw = localStorage.getItem(ADMIN_SESSION_KEY) || sessionStorage.getItem(LEGACY_ADMIN_KEY) || "";
+    if (!raw) return "";
+    if (!raw.startsWith("{")) return raw;
+    const session = JSON.parse(raw) as { key?: string; expiresAt?: number };
+    if (!session.key || (session.expiresAt && session.expiresAt < Date.now())) {
+      localStorage.removeItem(ADMIN_SESSION_KEY);
+      sessionStorage.removeItem(LEGACY_ADMIN_KEY);
+      return "";
+    }
+    return session.key;
+  } catch {
+    return "";
+  }
+};
+
+const persistAdminKey = (key: string) => {
+  localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ key, expiresAt: Date.now() + SESSION_TTL }));
+  sessionStorage.removeItem(LEGACY_ADMIN_KEY);
+};
 
 const Admin = () => {
   const [params] = useSearchParams();
-  const [authed, setAuthed] = useState(false);
+  const [access, setAccess] = useState<AccessState>("checking");
   const [keyInput, setKeyInput] = useState("");
+  const [accessError, setAccessError] = useState("");
   const [tab, setTab] = useState<TabId>("dashboard");
 
   useEffect(() => {
-    const urlKey = params.get("key") || "";
-    const storedKey = sessionStorage.getItem("teamcyberops_admin_key") || "";
-    if (urlKey) sessionStorage.setItem("teamcyberops_admin_key", urlKey);
-    if (urlKey || storedKey) setAuthed(true);
+    let cancelled = false;
+    const unlock = async () => {
+      const urlKey = params.get("key")?.trim() || "";
+      const candidate = urlKey || readStoredAdminKey();
+      if (!candidate) {
+        setAccess("locked");
+        return;
+      }
+      setAccess("checking");
+      setAccessError("");
+      try {
+        await validateAdminKey(candidate);
+        if (cancelled) return;
+        persistAdminKey(candidate);
+        setAccess("unlocked");
+        if (urlKey) window.history.replaceState({}, "", "/admin");
+      } catch (error) {
+        if (cancelled) return;
+        localStorage.removeItem(ADMIN_SESSION_KEY);
+        sessionStorage.removeItem(LEGACY_ADMIN_KEY);
+        setAccess("locked");
+        setAccessError(error instanceof Error ? error.message : "Invalid admin key");
+      }
+    };
+    unlock();
+    return () => { cancelled = true; };
   }, [params]);
 
-  if (!authed) {
+  const handleUnlock = async (event?: React.FormEvent) => {
+    event?.preventDefault();
+    const candidate = keyInput.trim();
+    if (!candidate) {
+      setAccessError("Enter the admin key to unlock editing.");
+      return;
+    }
+    setAccess("checking");
+    setAccessError("");
+    try {
+      await validateAdminKey(candidate);
+      persistAdminKey(candidate);
+      setKeyInput("");
+      setAccess("unlocked");
+    } catch (error) {
+      localStorage.removeItem(ADMIN_SESSION_KEY);
+      sessionStorage.removeItem(LEGACY_ADMIN_KEY);
+      setAccess("locked");
+      setAccessError(error instanceof Error ? error.message : "Invalid admin key");
+    }
+  };
+
+  if (access !== "unlocked") {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center relative">
         <CyberBackground3D />
-        <div className="relative z-10 glass-card rounded-2xl p-8 max-w-md w-full gradient-border text-center">
-          <h1 className="font-display text-3xl text-primary text-glow-blue mb-4">ACCESS DENIED</h1>
-          <p className="text-muted-foreground font-mono-terminal text-sm">Invalid or missing access key.</p>
+        <form onSubmit={handleUnlock} className="relative z-10 glass-card rounded-2xl p-8 max-w-md w-[calc(100%-2rem)] gradient-border text-center box-glow-blue">
+          <div className="mx-auto mb-5 h-14 w-14 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center text-primary text-2xl">⌁</div>
+          <h1 className="font-display text-3xl text-primary text-glow-blue mb-3">ADMIN UNLOCK</h1>
+          <p className="text-muted-foreground font-mono-terminal text-sm">Verified session required for CMS editing.</p>
+          {accessError && (
+            <div className="mt-5 rounded-lg border border-neon-red/30 bg-neon-red/10 px-3 py-2 text-left font-mono-terminal text-xs text-neon-red">
+              {accessError === "Access denied" ? "Access denied. Check the key and try again." : accessError}
+            </div>
+          )}
           <div className="mt-6 flex gap-2">
-            <input value={keyInput} onChange={(e) => setKeyInput(e.target.value)} placeholder="admin key" className="flex-1 bg-background/60 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
-            <button onClick={() => { if (keyInput.trim()) { sessionStorage.setItem("teamcyberops_admin_key", keyInput.trim()); setAuthed(true); } }} className="font-mono-terminal text-xs px-4 py-2 bg-primary/20 text-primary border border-primary/40 rounded-lg hover:bg-primary/30 transition-all">Unlock</button>
+            <input value={keyInput} onChange={(e) => setKeyInput(e.target.value)} placeholder="admin key" type="password" autoComplete="current-password" className="flex-1 min-w-0 bg-background/60 border border-border rounded-lg px-3 py-2 font-mono-terminal text-sm text-foreground focus:outline-none focus:border-primary/50" />
+            <button disabled={access === "checking"} className="font-mono-terminal text-xs px-4 py-2 bg-primary/20 text-primary border border-primary/40 rounded-lg hover:bg-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+              {access === "checking" ? "Checking" : "Unlock"}
+            </button>
           </div>
-        </div>
+          <p className="mt-4 font-mono-terminal text-[10px] text-muted-foreground">Session persists for 12 hours on this device.</p>
+          {access === "checking" && <div className="absolute inset-x-8 bottom-0 h-px bg-primary animate-pulse" />}
+        </form>
       </div>
+    );
+  }
+
+  const lockAdmin = () => {
+    localStorage.removeItem(ADMIN_SESSION_KEY);
+    sessionStorage.removeItem(LEGACY_ADMIN_KEY);
+    setAccess("locked");
+  };
+
+  if (access !== "unlocked") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center relative">
+        <CyberBackground3D />
+        <div className="relative z-10 font-mono-terminal text-primary animate-pulse">Checking admin session...</div>
+      </div>
+    );
+  }
+
+  if (false) {
+    return (
+      <div>
+        </div>
     );
   }
 
