@@ -2,9 +2,10 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Shield, Search, ClipboardList, AlertTriangle, Target, BookOpen, ChevronRight } from "lucide-react";
 import { useServices } from "@/hooks/use-cms";
 import { useRef, useState } from "react";
+import type { ElementType } from "react";
 import { Link } from "react-router-dom";
 
-const iconMap: Record<string, React.ElementType> = {
+const iconMap: Record<string, ElementType> = {
   shield: Shield,
   search: Search,
   clipboard: ClipboardList,
