@@ -146,22 +146,6 @@ const Admin = () => {
     setAccess("locked");
   };
 
-  if (access !== "unlocked") {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center relative">
-        <CyberBackground3D />
-        <div className="relative z-10 font-mono-terminal text-primary animate-pulse">Checking admin session...</div>
-      </div>
-    );
-  }
-
-  if (false) {
-    return (
-      <div>
-        </div>
-    );
-  }
-
   const tabs: { id: TabId; label: string }[] = [
     { id: "dashboard", label: "Dashboard" },
     { id: "messages", label: "Messages" },
@@ -186,7 +170,10 @@ const Admin = () => {
                 <span className="font-mono-terminal text-[10px] text-neon-green">ADMIN</span>
               </div>
             </div>
-            <a href="/" className="font-mono-terminal text-xs text-muted-foreground hover:text-primary transition-colors">← Back to Site</a>
+            <div className="flex items-center gap-3">
+              <button onClick={lockAdmin} className="font-mono-terminal text-xs text-neon-red hover:text-foreground transition-colors">Lock</button>
+              <a href="/" className="font-mono-terminal text-xs text-muted-foreground hover:text-primary transition-colors">← Back to Site</a>
+            </div>
           </div>
         </div>
 
