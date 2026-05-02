@@ -58,6 +58,10 @@ Deno.serve(async (req) => {
       return json({ error: "Table not allowed" }, 400);
     }
 
+    if (action === "validate") {
+      return json({ ok: true });
+    }
+
     if (action === "list") {
       const cfg = orderBy[table] || { column: "created_at", ascending: false };
       const { data, error } = await admin.from(table).select("*").order(cfg.column, { ascending: cfg.ascending, nullsFirst: false });
