@@ -2,12 +2,13 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, Shield, Search, ClipboardList, AlertTriangle, Target, BookOpen, X } from "lucide-react";
 import { useMemo, useRef } from "react";
+import type { ElementType } from "react";
 import Navbar from "@/components/Navbar";
 import CyberBackground3D from "@/components/CyberBackground3D";
 import FooterSection from "@/components/FooterSection";
 import { useServices } from "@/hooks/use-cms";
 
-const iconMap: Record<string, React.ElementType> = {
+const iconMap: Record<string, ElementType> = {
   shield: Shield,
   search: Search,
   clipboard: ClipboardList,
