@@ -4,11 +4,36 @@ import { useEffect } from "react";
 
 export type SiteContent = Record<string, string>;
 
+const ADMIN_KEY_STORAGE = "teamcyberops_admin_session";
+
 const getAdminKey = () => {
   if (typeof window === "undefined") return "";
   const fromUrl = new URLSearchParams(window.location.search).get("key") || "";
-  if (fromUrl) sessionStorage.setItem("teamcyberops_admin_key", fromUrl);
-  return fromUrl || sessionStorage.getItem("teamcyberops_admin_key") || "";
+  if (fromUrl) return fromUrl;
+
+  try {
+    const raw = localStorage.getItem(ADMIN_KEY_STORAGE) || sessionStorage.getItem("teamcyberops_admin_key") || "";
+    if (!raw) return "";
+    if (!raw.startsWith("{")) return raw;
+    const session = JSON.parse(raw) as { key?: string; expiresAt?: number };
+    if (!session.key || (session.expiresAt && session.expiresAt < Date.now())) {
+      localStorage.removeItem(ADMIN_KEY_STORAGE);
+      return "";
+    }
+    return session.key;
+  } catch {
+    return "";
+  }
+};
+
+export const validateAdminKey = async (adminKey: string) => {
+  const { data, error } = await supabase.functions.invoke("admin-cms", {
+    body: { action: "validate" },
+    headers: { "x-admin-key": adminKey },
+  });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  return data?.ok === true;
 };
 
 const adminRequest = async (action: string, table?: string, payload?: unknown, id?: string): Promise<any> => {
@@ -213,8 +238,9 @@ export function useContactMessages() {
   const qc = useQueryClient();
   
   useEffect(() => {
+    const channelName = `contact-messages-realtime-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const channel = supabase
-      .channel("contact-messages-realtime")
+      .channel(channelName)
       .on("postgres_changes", { event: "*", schema: "public", table: "contact_messages" }, () => {
         qc.invalidateQueries({ queryKey: ["contact-messages"] });
       })

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import badge from "@/assets/teamcyberops-badge.jpeg";
 import skullBack from "@/assets/skull-back.png";
 import ParticleBackground from "./ParticleBackground";
@@ -10,6 +10,7 @@ import { useState } from "react";
 const HeroSection = () => {
   const { data: content } = useSiteContent();
   const [flipped, setFlipped] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -24,16 +25,17 @@ const HeroSection = () => {
 
       <div className="relative z-20 text-center px-4 max-w-5xl mx-auto">
         <motion.div
-          initial={{ scale: 0.5, opacity: 0, rotateY: 180 }}
+          initial={{ scale: 0.82, opacity: 0, rotateY: reduceMotion ? 0 : 120 }}
           animate={{ scale: 1, opacity: 1, rotateY: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="mb-10"
+          className="mb-8 sm:mb-10"
         >
-          <div className="relative inline-block w-36 h-36 md:w-48 md:h-48" style={{ perspective: "1100px" }} onMouseEnter={() => setFlipped(true)} onMouseLeave={() => setFlipped(false)} onClick={() => setFlipped((v) => !v)}>
-            <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl scale-110" />
-            <motion.div className="relative w-full h-full animate-float cursor-pointer" style={{ transformStyle: "preserve-3d" }} animate={{ rotateY: flipped ? 180 : 0 }} transition={{ duration: 0.7, ease: "easeInOut" }}>
-              <img src={badge} alt="TeamCyberOps Badge" width={512} height={512} className="absolute inset-0 w-full h-full rounded-full ring-2 ring-primary/30 shadow-2xl shadow-primary/20 object-cover backface-hidden" />
-              <img src={skullBack} alt="TeamCyberOps alternate mark" width={512} height={512} className="absolute inset-0 w-full h-full rounded-full ring-2 ring-neon-red/40 shadow-2xl shadow-neon-red/20 object-cover backface-hidden" style={{ transform: "rotateY(180deg)" }} />
+          <div className="relative inline-block w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48" style={{ perspective: "1200px" }} onMouseEnter={() => !reduceMotion && setFlipped(true)} onMouseLeave={() => setFlipped(false)} onClick={() => setFlipped((v) => !v)}>
+            <div className="absolute inset-0 rounded-full bg-primary/25 blur-3xl scale-110 animate-pulse-glow" />
+            <div className="absolute -inset-3 rounded-full border border-primary/20 scanline" />
+            <motion.div className="relative w-full h-full animate-float cursor-pointer rounded-full" style={{ transformStyle: "preserve-3d" }} animate={{ rotateY: reduceMotion ? 0 : flipped ? 180 : 0, filter: flipped ? "drop-shadow(0 0 28px hsl(var(--neon-red) / 0.55))" : "drop-shadow(0 0 26px hsl(var(--primary) / 0.5))" }} transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}>
+              <img src={badge} alt="TeamCyberOps Badge" width={512} height={512} className="absolute inset-0 w-full h-full rounded-full ring-2 ring-primary/40 shadow-2xl object-cover backface-hidden" />
+              <img src={skullBack} alt="TeamCyberOps alternate mark" width={512} height={512} className="absolute inset-0 w-full h-full rounded-full ring-2 ring-neon-red/50 shadow-2xl object-cover backface-hidden" style={{ transform: "rotateY(180deg)" }} />
             </motion.div>
           </div>
         </motion.div>
@@ -42,7 +44,7 @@ const HeroSection = () => {
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.7 }}
-          className="font-display text-5xl sm:text-6xl md:text-8xl tracking-wider text-glow-blue text-primary mb-4"
+          className="font-display text-[clamp(3rem,12vw,7rem)] leading-[0.9] tracking-normal text-glow-blue text-primary mb-4 break-words"
         >
           <GlitchText text={content?.hero_title || "TeamCyberØps"} />
         </motion.h1>

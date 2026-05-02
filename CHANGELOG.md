@@ -2,6 +2,20 @@
 
 All notable changes to TeamCyberØps are documented here.
 
+## [1.5.0] — 2026-05-02
+
+### Added
+- Feature-row services comparison table on `/services` with tier columns and a sticky pricing CTA
+- Dedicated service detail layout with overview, pricing, deliverables, FAQs, and back-to-comparison link
+- Stronger neon depth layers and scroll parallax on service cards
+
+### Changed
+- Hero logo flip is smoother, mobile-safe, and aligned with the glitch cyber theme
+- Admin unlock flow now validates keys before opening the CMS and persists a time-limited session
+
+### Fixed
+- Admin panel no longer opens into a broken authenticated state when the key is missing or invalid
+
 ## [1.4.0] — 2026-05-01
 
 ### Added
