@@ -238,8 +238,9 @@ export function useContactMessages() {
   const qc = useQueryClient();
   
   useEffect(() => {
+    const channelName = `contact-messages-realtime-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const channel = supabase
-      .channel("contact-messages-realtime")
+      .channel(channelName)
       .on("postgres_changes", { event: "*", schema: "public", table: "contact_messages" }, () => {
         qc.invalidateQueries({ queryKey: ["contact-messages"] });
       })
