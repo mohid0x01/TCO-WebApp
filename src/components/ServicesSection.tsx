@@ -30,6 +30,7 @@ const ServicesSection = () => {
       <motion.div style={{ y: orbY }} className="absolute right-[10%] bottom-28 h-20 w-20 rounded-full border border-neon-green/15 bg-neon-green/5 hidden md:block" />
       <motion.div style={{ y: deepY }} className="absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full border border-neon-red/10 bg-neon-red/5 blur-2xl hidden md:block" />
       <motion.div style={{ y: deepY }} className="absolute right-[18%] top-12 h-44 w-44 rotate-12 border border-primary/10 bg-[linear-gradient(135deg,hsl(var(--primary)/0.10),transparent)] hidden lg:block" />
+      <motion.div style={{ y: orbY }} className="absolute left-[18%] bottom-8 h-40 w-40 border border-primary/10 bg-[repeating-linear-gradient(90deg,hsl(var(--primary)/0.08)_0_1px,transparent_1px_10px)] opacity-60 hidden lg:block" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
@@ -66,6 +67,9 @@ const ServicesSection = () => {
                 style={{ transformStyle: "preserve-3d" }}
               >
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--primary)/0.22),transparent_45%)]" />
+                <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_0%,hsl(var(--primary)/0.08)_45%,transparent_55%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="absolute inset-4 border border-primary/10 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" style={{ transform: "translateZ(18px)" }} />
+                <div className="absolute inset-8 border border-neon-red/10 transition-transform duration-500 group-hover:-translate-x-1 group-hover:translate-y-1" style={{ transform: "translateZ(34px)" }} />
                 <div className="absolute inset-x-6 top-0 h-px bg-primary/60 shadow-[0_0_18px_hsl(var(--primary)/0.9)] opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full border border-primary/20 bg-primary/10 transition-transform duration-500 group-hover:translate-x-2 group-hover:scale-125" />
                 <div className="absolute -left-10 bottom-12 h-24 w-24 rotate-45 border border-neon-red/20 bg-neon-red/5 transition-transform duration-500 group-hover:-translate-y-3 group-hover:rotate-90" />
