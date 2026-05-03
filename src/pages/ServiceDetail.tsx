@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import CyberBackground3D from "@/components/CyberBackground3D";
 import FooterSection from "@/components/FooterSection";
 import { useService } from "@/hooks/use-cms";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const buildFaqs = (service: any) => [
   { q: "What happens first?", a: `Every ${service.title} operation starts with scope confirmation, authorization boundaries, and a secure kickoff.` },
@@ -20,6 +21,16 @@ const ServiceDetail = () => {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [80, -120]);
+  const faqs = service ? buildFaqs(service) : [];
+  const faqSchema = service ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  } : null;
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -63,9 +74,18 @@ const ServiceDetail = () => {
                   </div>
                   <div className="glass-card rounded-2xl p-7 gradient-border">
                     <h2 className="font-display text-3xl text-foreground mb-5">FAQs</h2>
-                    <div className="space-y-4">
-                      {buildFaqs(service).map((faq) => <div key={faq.q} className="rounded-lg border border-border/50 p-4 bg-background/20"><div className="flex gap-3"><HelpCircle className="w-4 h-4 text-primary mt-1 flex-shrink-0" /><div><h3 className="font-display text-lg text-foreground">{faq.q}</h3><p className="text-sm text-muted-foreground mt-1 leading-relaxed">{faq.a}</p></div></div></div>)}
-                    </div>
+                    <Accordion type="single" collapsible className="space-y-3" itemScope itemType="https://schema.org/FAQPage">
+                      {faqs.map((faq, index) => (
+                        <AccordionItem key={faq.q} value={`faq-${index}`} className="rounded-lg border border-border/50 bg-background/20 px-4" itemScope itemProp="mainEntity" itemType="https://schema.org/Question">
+                          <AccordionTrigger className="gap-3 py-4 text-left hover:no-underline">
+                            <span className="flex items-center gap-3 font-display text-lg text-foreground"><HelpCircle className="w-4 h-4 text-primary flex-shrink-0" /><span itemProp="name">{faq.q}</span></span>
+                          </AccordionTrigger>
+                          <AccordionContent className="pl-7 text-sm text-muted-foreground leading-relaxed" itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                            <p itemProp="text">{faq.a}</p>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
                   </div>
                 </div>
                 <aside className="glass-card rounded-2xl p-7 gradient-border h-fit lg:sticky lg:top-24">
@@ -78,6 +98,7 @@ const ServiceDetail = () => {
           )}
         </div>
       </section>
+      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
       <FooterSection />
     </div>
   );
