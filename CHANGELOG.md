@@ -2,6 +2,18 @@
 
 All notable changes to TeamCyberØps are documented here.
 
+## [1.6.0] — 2026-05-03
+
+### Added
+- Schema-friendly FAQ accordion UI on every `/services/:slug` page with JSON-LD FAQ data
+- Engagement flow and zero-leak handling blocks on `/services`
+- Mobile scroll hint behavior for the services comparison matrix with pinned feature labels
+
+### Changed
+- Hero logo flip now uses the uploaded TeamCyberØps logo front and skull back with smoother cyber-glitch scan effects
+- Services cards gained extra WebGL-like depth layers, neon highlights, and stronger parallax styling
+- Sticky pricing CTA spacing improved for mobile safe areas
+
 ## [1.5.0] — 2026-05-02
 
 ### Added

@@ -22,13 +22,15 @@ TeamCyberØps is a full-stack cybersecurity platform built with React, Three.js,
 
 - **CMS Dashboard** — Every text, stat, and piece of content is manageable via the admin panel
 - **3D WebGL Background** — Rotating wireframe globe, DNA helix, octahedrons, particle field, and grid floor
-- **Services & Pricing** — Homepage service cards, `/services` feature-row comparison matrix, sticky pricing CTA, service detail routes, and admin CRUD
+- **Services & Pricing** — Homepage service cards, enhanced `/services` feature matrix, mobile sticky pricing CTA, service detail routes, and admin CRUD
 - **Blog System** — Full blog with slug-based routing, cover images, tags, and rich content
 - **GitHub Auto-Sync** — Repos from `github.com/mohidqx` auto-create project cards
 - **Zero Leak Admin Layer** — Admin CRUD and private messages are routed through a protected backend function
 - **Team Management** — Add/edit team members with avatars, roles, clearance levels
 - **Social Links** — Dynamic social bar managed from admin
-- **Logo Flip Animation** — Smooth glitch-themed 3D flip on the hero badge with mobile-safe sizing
+- **Logo Flip Animation** — Smooth glitch-themed 3D flip using the TeamCyberØps badge front and skull back with mobile-safe sizing
+- **Service FAQs** — Accordion-based service FAQs with schema-friendly question/answer markup and JSON-LD
+- **Zero-Leak Workflow** — Services page now explains scope lock, active operation, remediation, and secure evidence handling
 - **Parallax & Scroll Animations** — Layered depth effects with staggered reveals
 - **Mobile Responsive** — Smooth experience across all breakpoints
 
@@ -52,7 +54,7 @@ src/
 | `/` | Landing page with all sections |
 | `/tools` | Filterable arsenal page with project details |
 | `/services` | Detailed services pricing page with tier columns, feature rows, and sticky quote CTA |
-| `/services/:slug` | Individual service detail page with overview, pricing, deliverables, FAQs, and comparison backlink |
+| `/services/:slug` | Individual service detail page with overview, pricing, deliverables, schema-friendly FAQ accordion, and comparison backlink |
 | `/blog` | Blog listing page |
 | `/blog/:slug` | Individual blog post |
 | `/terms` | Terms & Conditions |

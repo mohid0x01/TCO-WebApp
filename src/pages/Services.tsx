@@ -26,6 +26,14 @@ const featureRows = [
   { label: "Priority response channel", match: (s: any) => /incident|priority|response|emergency|managed/i.test(`${s.title} ${s.features?.join(" ")}`) },
 ];
 
+const assuranceRows = ["Authorized scope only", "Zero-leak evidence handling", "Encrypted reporting", "Remediation-first output"];
+
+const operationSteps = [
+  { phase: "01", title: "Scope Lock", copy: "Define targets, authorization windows, exclusions, and success criteria before testing starts." },
+  { phase: "02", title: "Active Operation", copy: "Run controlled recon, validation, exploitation checks, and evidence capture with minimal noise." },
+  { phase: "03", title: "Fix & Retest", copy: "Deliver ranked findings, remediation steps, and verification support to close security gaps." },
+];
+
 const Services = () => {
   const { data: services, isLoading } = useServices();
   const ref = useRef<HTMLElement>(null);
@@ -75,16 +83,42 @@ const Services = () => {
                 })}
               </div>
 
+              <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-6 mb-16">
+                <div className="glass-card rounded-2xl p-6 md:p-8 gradient-border overflow-hidden relative">
+                  <div className="absolute inset-0 grid-bg opacity-20" />
+                  <div className="relative">
+                    <span className="font-mono-terminal text-[10px] text-primary uppercase tracking-[0.3em]">// Engagement Flow</span>
+                    <h2 className="font-display text-3xl text-foreground mt-2 mb-6">From Recon to Remediation</h2>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      {operationSteps.map((step) => (
+                        <div key={step.phase} className="rounded-xl border border-primary/15 bg-background/25 p-4">
+                          <span className="font-mono-terminal text-xs text-primary">{step.phase}</span>
+                          <h3 className="font-display text-xl text-foreground mt-2">{step.title}</h3>
+                          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{step.copy}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="glass-card rounded-2xl p-6 md:p-8 gradient-border">
+                  <span className="font-mono-terminal text-[10px] text-primary uppercase tracking-[0.3em]">// Security Rules</span>
+                  <h2 className="font-display text-3xl text-foreground mt-2 mb-5">Zero-Leak Handling</h2>
+                  <div className="grid gap-3">
+                    {assuranceRows.map((item) => <div key={item} className="flex items-center gap-3 rounded-lg border border-border/50 bg-background/20 p-3 text-sm text-foreground/80"><Check className="h-4 w-4 text-primary" />{item}</div>)}
+                  </div>
+                </div>
+              </div>
+
               <div id="comparison" className="relative glass-card rounded-2xl overflow-hidden gradient-border mb-10">
                 <div className="p-6 border-b border-border/50 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
                   <div>
                     <span className="font-mono-terminal text-[10px] text-primary uppercase tracking-[0.3em]">// Feature Matrix</span>
                     <h2 className="font-display text-3xl text-foreground mt-2">Capability Comparison</h2>
                   </div>
-                  <p className="text-sm text-muted-foreground max-w-xl">Feature rows map across service tiers so pricing and coverage stay easy to scan on desktop and mobile.</p>
+                  <p className="text-sm text-muted-foreground max-w-xl">Feature rows map across service tiers. On mobile, swipe the matrix sideways while the feature column stays pinned.</p>
                 </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[920px]">
+                <div className="overflow-x-auto pb-3 [-webkit-overflow-scrolling:touch]">
+                  <table className="w-full min-w-[760px] sm:min-w-[920px]">
                     <thead>
                       <tr className="border-b border-border/50">
                         <th className="sticky left-0 z-20 bg-card/95 backdrop-blur text-left p-4 font-mono-terminal text-xs text-primary uppercase tracking-wider w-64">Feature</th>
@@ -102,7 +136,7 @@ const Services = () => {
                 </div>
               </div>
 
-              <div className="sticky bottom-4 z-30 rounded-2xl border border-primary/30 bg-card/90 backdrop-blur-xl p-4 box-glow-blue">
+              <div className="sticky bottom-4 z-30 rounded-2xl border border-primary/30 bg-card/90 backdrop-blur-xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] box-glow-blue">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div><p className="font-display text-xl text-foreground">Ready for a zero-leak security operation?</p><p className="font-mono-terminal text-xs text-muted-foreground">Recommended: {featured?.title || "Security Assessment"} • {featured?.price || "Contact Us"}</p></div>
                   <a href="/#contact" className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-display text-sm uppercase tracking-wider text-primary-foreground hover:box-glow-blue transition-all">Request Quote <ArrowRight className="w-4 h-4" /></a>
