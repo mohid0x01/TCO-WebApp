@@ -285,6 +285,10 @@
   animation: logo-glitch-scan 0.72s steps(5, end) infinite;
 }
 
+.hero-logo-shell:hover .hero-logo-slice {
+  opacity: 1;
+}
+
 @media (max-width: 640px) {
   .hero-logo-card {
     animation-duration: 5s;
