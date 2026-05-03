@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
-import badge from "@/assets/teamcyberops-badge.jpeg";
+import heroLogo from "@/assets/teamcyberops-front-logo.png";
 import skullBack from "@/assets/skull-back.png";
 import ParticleBackground from "./ParticleBackground";
 import GlitchText from "./GlitchText";
@@ -11,6 +11,8 @@ const HeroSection = () => {
   const { data: content } = useSiteContent();
   const [flipped, setFlipped] = useState(false);
   const reduceMotion = useReducedMotion();
+  const rawTitle = content?.hero_title || "TeamCyberØps";
+  const heroTitle = rawTitle.replace(/teamcyberops/i, "TeamCyberØps");
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -30,13 +32,15 @@ const HeroSection = () => {
           transition={{ duration: 1, ease: "easeOut" }}
           className="mb-8 sm:mb-10"
         >
-          <div className="relative inline-block w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48" style={{ perspective: "1200px" }} onMouseEnter={() => !reduceMotion && setFlipped(true)} onMouseLeave={() => setFlipped(false)} onClick={() => setFlipped((v) => !v)}>
-            <div className="absolute inset-0 rounded-full bg-primary/25 blur-3xl scale-110 animate-pulse-glow" />
-            <div className="absolute -inset-3 rounded-full border border-primary/20 scanline" />
-            <motion.div className="relative w-full h-full animate-float cursor-pointer rounded-full" style={{ transformStyle: "preserve-3d" }} animate={{ rotateY: reduceMotion ? 0 : flipped ? 180 : 0, filter: flipped ? "drop-shadow(0 0 28px hsl(var(--neon-red) / 0.55))" : "drop-shadow(0 0 26px hsl(var(--primary) / 0.5))" }} transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}>
-              <img src={badge} alt="TeamCyberOps Badge" width={512} height={512} className="absolute inset-0 w-full h-full rounded-full ring-2 ring-primary/40 shadow-2xl object-cover backface-hidden" />
-              <img src={skullBack} alt="TeamCyberOps alternate mark" width={512} height={512} className="absolute inset-0 w-full h-full rounded-full ring-2 ring-neon-red/50 shadow-2xl object-cover backface-hidden" style={{ transform: "rotateY(180deg)" }} />
+          <div className="hero-logo-shell relative inline-block h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 lg:h-48 lg:w-48" style={{ perspective: "1400px" }} onMouseEnter={() => !reduceMotion && setFlipped(true)} onMouseLeave={() => setFlipped(false)} onClick={() => setFlipped((v) => !v)} aria-label="Flip TeamCyberØps logo">
+            <div className="absolute -inset-5 rounded-full bg-primary/20 blur-3xl animate-pulse-glow" />
+            <div className="hero-logo-orbit absolute -inset-4 rounded-full border border-primary/25 scanline" />
+            <div className="absolute inset-0 rounded-full border border-neon-red/15" />
+            <motion.div className="hero-logo-card relative h-full w-full cursor-pointer rounded-full" style={{ transformStyle: "preserve-3d" }} animate={{ rotateY: reduceMotion ? 0 : flipped ? 180 : 0, rotateZ: flipped ? -1.5 : 0, filter: flipped ? "drop-shadow(0 0 30px hsl(var(--neon-red) / 0.58))" : "drop-shadow(0 0 30px hsl(var(--primary) / 0.58))" }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
+              <img src={heroLogo} alt="TeamCyberØps logo" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-primary/50 object-cover backface-hidden" />
+              <img src={skullBack} alt="TeamCyberØps skull mark" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-neon-red/50 object-cover backface-hidden" style={{ transform: "rotateY(180deg)" }} />
             </motion.div>
+            <div className="pointer-events-none absolute inset-x-2 top-1/2 h-px bg-primary/70 opacity-0 shadow-[0_0_18px_hsl(var(--primary)/0.95)] transition-opacity duration-300 hero-logo-slice" />
           </div>
         </motion.div>
 
@@ -44,9 +48,9 @@ const HeroSection = () => {
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.7 }}
-          className="font-display text-[clamp(3rem,12vw,7rem)] leading-[0.9] tracking-normal text-glow-blue text-primary mb-4 break-words"
+          className="font-display text-[clamp(2.65rem,11vw,7rem)] leading-[0.88] tracking-normal text-glow-blue text-primary mb-4 break-words max-w-full"
         >
-          <GlitchText text={content?.hero_title || "TeamCyberØps"} />
+          <GlitchText text={heroTitle} />
         </motion.h1>
 
         <motion.p
