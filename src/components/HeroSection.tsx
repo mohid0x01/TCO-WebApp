@@ -38,7 +38,7 @@ const HeroSection = () => {
               <img src={heroLogo} alt="TeamCyberØps logo" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-primary/50 object-cover backface-hidden" />
               <img src={skullBack} alt="TeamCyberØps skull mark" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-neon-red/50 object-cover backface-hidden" style={{ transform: "rotateY(180deg)" }} />
             </motion.div>
-            <div className="pointer-events-none absolute inset-x-2 top-1/2 h-px bg-primary/70 opacity-0 shadow-[0_0_18px_hsl(var(--primary)/0.95)] transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="pointer-events-none absolute inset-x-2 top-1/2 h-px bg-primary/70 opacity-0 shadow-[0_0_18px_hsl(var(--primary)/0.95)] transition-opacity duration-300 hero-logo-slice" />
           </div>
         </motion.div>
 
