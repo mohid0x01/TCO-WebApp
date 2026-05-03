@@ -249,11 +249,11 @@
   -webkit-backface-visibility: hidden;
 }
 
-.hero-logo-card {
+.hero-logo-shell {
   animation: float 4s ease-in-out infinite;
 }
 
-.hero-logo-shell:hover .hero-logo-card {
+.hero-logo-shell:hover {
   animation-play-state: paused;
 }
 
@@ -290,7 +290,7 @@
 }
 
 @media (max-width: 640px) {
-  .hero-logo-card {
+  .hero-logo-shell {
     animation-duration: 5s;
   }
 }
