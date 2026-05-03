@@ -11,6 +11,8 @@ const HeroSection = () => {
   const { data: content } = useSiteContent();
   const [flipped, setFlipped] = useState(false);
   const reduceMotion = useReducedMotion();
+  const rawTitle = content?.hero_title || "TeamCyberØps";
+  const heroTitle = rawTitle.replace(/teamcyberops/i, "TeamCyberØps");
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -48,7 +50,7 @@ const HeroSection = () => {
           transition={{ delay: 0.4, duration: 0.7 }}
           className="font-display text-[clamp(2.65rem,11vw,7rem)] leading-[0.88] tracking-normal text-glow-blue text-primary mb-4 break-words max-w-full"
         >
-          <GlitchText text={content?.hero_title || "TeamCyberØps"} />
+          <GlitchText text={heroTitle} />
         </motion.h1>
 
         <motion.p
