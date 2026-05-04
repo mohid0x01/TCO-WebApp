@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Check, Shield, Search, ClipboardList, AlertTriangle, Target, BookOpen, X } from "lucide-react";
 import { useMemo, useRef } from "react";
 import type { ElementType } from "react";
@@ -36,6 +36,7 @@ const operationSteps = [
 
 const Services = () => {
   const { data: services, isLoading } = useServices();
+  const navigate = useNavigate();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [80, -110]);
@@ -43,6 +44,13 @@ const Services = () => {
   const activeServices = services || [];
   const tiers = activeServices.slice(0, 4);
   const featured = useMemo(() => activeServices.find((s) => s.is_featured) || activeServices[0], [activeServices]);
+
+  const handleCta = (service?: any, tier?: string) => {
+    const params = new URLSearchParams();
+    if (service) params.set("service", service.title);
+    if (tier) params.set("tier", tier);
+    navigate(`/?${params.toString()}#contact`);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -77,7 +85,10 @@ const Services = () => {
                       <ul className="relative space-y-3 flex-1">
                         {(service.features || []).slice(0, 8).map((feature) => <li key={feature} className="flex gap-3 text-sm text-foreground/80"><Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />{feature}</li>)}
                       </ul>
-                      <Link to={`/services/${service.slug}`} className={`relative mt-8 text-center font-display text-sm tracking-wider uppercase py-3 rounded-lg border transition-all ${service.is_featured ? "bg-primary text-primary-foreground border-primary hover:box-glow-blue" : "border-primary/30 text-primary hover:bg-primary/10"}`}>{service.cta_label || "Get Started"} →</Link>
+                      <div className="relative mt-8 flex flex-col gap-2">
+                        <Link to={`/services/${service.slug}`} className={`text-center font-display text-sm tracking-wider uppercase py-3 rounded-lg border transition-all ${service.is_featured ? "bg-primary text-primary-foreground border-primary hover:box-glow-blue" : "border-primary/30 text-primary hover:bg-primary/10"}`}>{service.cta_label || "Learn More"} →</Link>
+                        <button onClick={() => handleCta(service, service.comparison_level)} className="text-center font-mono-terminal text-xs tracking-wider uppercase py-2 rounded-lg border border-neon-red/30 text-neon-red hover:bg-neon-red/10 transition-all">Get Quote →</button>
+                      </div>
                     </motion.div>
                   );
                 })}
@@ -109,20 +120,53 @@ const Services = () => {
                 </div>
               </div>
 
+              {/* Comparison table — mobile: card layout, desktop: table */}
               <div id="comparison" className="relative glass-card rounded-2xl overflow-hidden gradient-border mb-10">
                 <div className="p-6 border-b border-border/50 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
                   <div>
                     <span className="font-mono-terminal text-[10px] text-primary uppercase tracking-[0.3em]">// Feature Matrix</span>
                     <h2 className="font-display text-3xl text-foreground mt-2">Capability Comparison</h2>
                   </div>
-                  <p className="text-sm text-muted-foreground max-w-xl">Feature rows map across service tiers. On mobile, swipe the matrix sideways while the feature column stays pinned.</p>
+                  <p className="text-sm text-muted-foreground max-w-xl">Feature rows map across service tiers. On mobile, swipe sideways.</p>
                 </div>
-                <div className="overflow-x-auto pb-3 [-webkit-overflow-scrolling:touch]">
-                  <table className="w-full min-w-[760px] sm:min-w-[920px]">
-                    <thead>
+
+                {/* Mobile: horizontal snap scroll cards */}
+                <div className="md:hidden overflow-x-auto snap-x snap-mandatory flex gap-4 p-4 [-webkit-overflow-scrolling:touch]">
+                  {tiers.map((service) => (
+                    <div key={service.id} className="snap-center flex-shrink-0 w-[85vw] max-w-[320px] glass-card rounded-xl p-5 border border-border/50">
+                      <div className="sticky top-0 z-10 bg-card/95 backdrop-blur pb-3 mb-3 border-b border-border/30">
+                        <Link to={`/services/${service.slug}`} className="font-display text-xl text-foreground hover:text-primary transition-colors">{service.title}</Link>
+                        <div className="font-mono-terminal text-xs text-primary mt-1">{service.price}</div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs"><span className="text-muted-foreground">Best For</span><span className="text-foreground/80 text-right max-w-[60%]">{service.best_for}</span></div>
+                        <div className="flex justify-between text-xs"><span className="text-muted-foreground">Timeline</span><span className="text-foreground/80">{service.timeline}</span></div>
+                        <div className="flex justify-between text-xs"><span className="text-muted-foreground">Level</span><span className="text-foreground/80">{service.comparison_level}</span></div>
+                        <div className="h-px bg-border/30 my-2" />
+                        {featureRows.map((row) => (
+                          <div key={row.label} className="flex justify-between items-center text-xs py-1">
+                            <span className="text-foreground/70 max-w-[70%]">{row.label}</span>
+                            {row.match(service) ? <Check className="w-4 h-4 text-primary" /> : <X className="w-3 h-3 text-muted-foreground/40" />}
+                          </div>
+                        ))}
+                      </div>
+                      <button onClick={() => handleCta(service, service.comparison_level)} className="mt-4 w-full text-center font-display text-xs tracking-wider uppercase py-2.5 rounded-lg bg-primary text-primary-foreground hover:box-glow-blue transition-all">Get Quote →</button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop table */}
+                <div className="hidden md:block overflow-x-auto pb-3 [-webkit-overflow-scrolling:touch]">
+                  <table className="w-full min-w-[760px]">
+                    <thead className="sticky top-0 z-20 bg-card/95 backdrop-blur">
                       <tr className="border-b border-border/50">
-                        <th className="sticky left-0 z-20 bg-card/95 backdrop-blur text-left p-4 font-mono-terminal text-xs text-primary uppercase tracking-wider w-64">Feature</th>
-                        {tiers.map((service) => <th key={service.id} className="p-4 text-left align-top"><Link to={`/services/${service.slug}`} className="font-display text-xl text-foreground hover:text-primary transition-colors">{service.title}</Link><div className="font-mono-terminal text-xs text-primary mt-1">{service.price}</div></th>)}
+                        <th className="sticky left-0 z-30 bg-card/95 backdrop-blur text-left p-4 font-mono-terminal text-xs text-primary uppercase tracking-wider w-64">Feature</th>
+                        {tiers.map((service) => (
+                          <th key={service.id} className="p-4 text-left align-top">
+                            <Link to={`/services/${service.slug}`} className="font-display text-xl text-foreground hover:text-primary transition-colors">{service.title}</Link>
+                            <div className="font-mono-terminal text-xs text-primary mt-1">{service.price}</div>
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
@@ -130,7 +174,8 @@ const Services = () => {
                       <tr className="border-b border-border/30"><td className="sticky left-0 z-10 bg-card/95 p-4 font-mono-terminal text-xs text-muted-foreground uppercase">Timeline</td>{tiers.map((s) => <td key={s.id} className="p-4 text-sm text-muted-foreground">{s.timeline}</td>)}</tr>
                       <tr className="border-b border-border/30"><td className="sticky left-0 z-10 bg-card/95 p-4 font-mono-terminal text-xs text-muted-foreground uppercase">Level</td>{tiers.map((s) => <td key={s.id} className="p-4 text-sm text-muted-foreground">{s.comparison_level}</td>)}</tr>
                       {featureRows.map((row) => <tr key={row.label} className="border-b border-border/30 hover:bg-primary/5 transition-colors"><td className="sticky left-0 z-10 bg-card/95 p-4 font-mono-terminal text-xs text-foreground uppercase">{row.label}</td>{tiers.map((s) => <td key={s.id} className="p-4">{row.match(s) ? <Check className="w-5 h-5 text-primary drop-shadow-[0_0_10px_hsl(var(--primary)/0.7)]" /> : <X className="w-4 h-4 text-muted-foreground/40" />}</td>)}</tr>)}
-                      <tr><td className="sticky left-0 z-10 bg-card/95 p-4 font-mono-terminal text-xs text-muted-foreground uppercase">Deliverables</td>{tiers.map((s) => <td key={s.id} className="p-4 text-sm text-muted-foreground">{(s.deliverables || s.features || []).slice(0, 3).join(" • ")}</td>)}</tr>
+                      <tr className="border-b border-border/30"><td className="sticky left-0 z-10 bg-card/95 p-4 font-mono-terminal text-xs text-muted-foreground uppercase">Deliverables</td>{tiers.map((s) => <td key={s.id} className="p-4 text-sm text-muted-foreground">{(s.deliverables || s.features || []).slice(0, 3).join(" • ")}</td>)}</tr>
+                      <tr><td className="sticky left-0 z-10 bg-card/95 p-4"></td>{tiers.map((s) => <td key={s.id} className="p-4"><button onClick={() => handleCta(s, s.comparison_level)} className="font-display text-xs tracking-wider uppercase py-2 px-4 rounded-lg bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 transition-all">Get Quote →</button></td>)}</tr>
                     </tbody>
                   </table>
                 </div>
@@ -139,7 +184,7 @@ const Services = () => {
               <div className="sticky bottom-4 z-30 rounded-2xl border border-primary/30 bg-card/90 backdrop-blur-xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] box-glow-blue">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div><p className="font-display text-xl text-foreground">Ready for a zero-leak security operation?</p><p className="font-mono-terminal text-xs text-muted-foreground">Recommended: {featured?.title || "Security Assessment"} • {featured?.price || "Contact Us"}</p></div>
-                  <a href="/#contact" className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-display text-sm uppercase tracking-wider text-primary-foreground hover:box-glow-blue transition-all">Request Quote <ArrowRight className="w-4 h-4" /></a>
+                  <button onClick={() => handleCta(featured)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-display text-sm uppercase tracking-wider text-primary-foreground hover:box-glow-blue transition-all">Request Quote <ArrowRight className="w-4 h-4" /></button>
                 </div>
               </div>
             </>
