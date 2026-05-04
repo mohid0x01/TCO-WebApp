@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useSiteContent } from "@/hooks/use-cms";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -9,6 +10,20 @@ const ContactSection = () => {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const { data: content } = useSiteContent();
+  const location = useLocation();
+
+  // Prefill from URL params (service/tier from CTA buttons)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const service = params.get("service");
+    const tier = params.get("tier");
+    if (service || tier) {
+      const parts: string[] = [];
+      if (service) parts.push(`Service: ${service}`);
+      if (tier) parts.push(`Tier: ${tier}`);
+      setMessage((prev) => prev || `I'm interested in:\n${parts.join("\n")}\n\nPlease provide a quote.`);
+    }
+  }, [location.search]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
