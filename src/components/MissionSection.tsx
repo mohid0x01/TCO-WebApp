@@ -1,11 +1,12 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
-import badge from "@/assets/teamcyberops-badge.jpeg";
 import skullBack from "@/assets/skull-back.png";
 import { useSiteContent } from "@/hooks/use-cms";
+import { useGitHubAvatar } from "@/hooks/use-github-avatar";
 
 const FlipLogo = () => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const avatarUrl = useGitHubAvatar();
 
   return (
     <div
@@ -25,7 +26,7 @@ const FlipLogo = () => {
         <div className="absolute inset-0 backface-hidden">
           <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl scale-75" />
           <img
-            src={badge}
+            src={avatarUrl}
             alt="TeamCyberOps Badge"
             className="relative w-full h-full rounded-full ring-2 ring-primary/20 shadow-2xl shadow-primary/10 object-cover"
           />

@@ -28,7 +28,10 @@ TeamCyberØps is a full-stack cybersecurity platform built with React, Three.js,
 - **Zero Leak Admin Layer** — Admin CRUD and private messages are routed through a protected backend function
 - **Team Management** — Add/edit team members with avatars, roles, clearance levels
 - **Social Links** — Dynamic social bar managed from admin
-- **Logo Flip Animation** — Smooth glitch-themed 3D flip using the TeamCyberØps badge front and skull back with mobile-safe sizing
+- **Floating GitHub Widget** — Bottom-right popup with auto-updating GitHub avatar, ripple hover effects, portfolio link, and repository links
+- **CTF & WebRecox Buttons** — Beautified hero CTAs linking to [ctfcyberops.vercel.app](https://ctfcyberops.vercel.app) and [webrecox.vercel.app](https://webrecox.vercel.app) with shimmer hover effects
+- **Auto-Updating Logos** — All site logos (navbar, hero, footer, mission) auto-refresh from the GitHub organization avatar
+- **Logo Flip Animation** — Smooth glitch-themed 3D flip using the live GitHub avatar front and skull back with mobile-safe sizing
 - **Service FAQs** — Accordion-based service FAQs with schema-friendly question/answer markup and JSON-LD
 - **Zero-Leak Workflow** — Services page now explains scope lock, active operation, remediation, and secure evidence handling
 - **Parallax & Scroll Animations** — Layered depth effects with staggered reveals

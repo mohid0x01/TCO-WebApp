@@ -1,10 +1,10 @@
 import { motion, useReducedMotion } from "framer-motion";
-import heroLogo from "@/assets/teamcyberops-front-logo.png";
 import skullBack from "@/assets/skull-back.png";
 import ParticleBackground from "./ParticleBackground";
 import GlitchText from "./GlitchText";
 import TypingText from "./TypingText";
 import { useSiteContent } from "@/hooks/use-cms";
+import { useGitHubAvatar } from "@/hooks/use-github-avatar";
 import { useState } from "react";
 
 const HeroSection = () => {
@@ -13,6 +13,7 @@ const HeroSection = () => {
   const reduceMotion = useReducedMotion();
   const rawTitle = content?.hero_title || "TeamCyberØps";
   const heroTitle = rawTitle.replace(/teamcyberops/i, "TeamCyberØps");
+  const avatarUrl = useGitHubAvatar();
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -36,9 +37,26 @@ const HeroSection = () => {
             <div className="absolute -inset-5 rounded-full bg-primary/20 blur-3xl animate-pulse-glow" />
             <div className="hero-logo-orbit absolute -inset-4 rounded-full border border-primary/25 scanline" />
             <div className="absolute inset-0 rounded-full border border-neon-red/15" />
-            <motion.div className="hero-logo-card relative h-full w-full cursor-pointer rounded-full" style={{ transformStyle: "preserve-3d" }} animate={{ rotateY: reduceMotion ? 0 : flipped ? 180 : 0, rotateZ: flipped ? -1.5 : 0, filter: flipped ? "drop-shadow(0 0 30px hsl(var(--neon-red) / 0.58))" : "drop-shadow(0 0 30px hsl(var(--primary) / 0.58))" }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
-              <img src={heroLogo} alt="TeamCyberØps logo" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-primary/50 object-cover backface-hidden" />
-              <img src={skullBack} alt="TeamCyberØps skull mark" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-neon-red/50 object-cover backface-hidden" style={{ transform: "rotateY(180deg)" }} />
+            <motion.div
+              className="hero-logo-card relative h-full w-full cursor-pointer rounded-full"
+              style={{ transformStyle: "preserve-3d" }}
+              animate={{
+                rotateY: reduceMotion ? 0 : flipped ? 180 : 0,
+                rotateZ: flipped ? -1.5 : 0,
+                filter: flipped
+                  ? "drop-shadow(0 0 30px hsl(var(--neon-red) / 0.58))"
+                  : "drop-shadow(0 0 30px hsl(var(--primary) / 0.58))",
+              }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {/* Front face — GitHub auto-updated avatar */}
+              <div className="absolute inset-0 rounded-full ring-2 ring-primary/50 overflow-hidden" style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}>
+                <img src={avatarUrl} alt="TeamCyberØps logo" width={512} height={512} className="h-full w-full object-cover" />
+              </div>
+              {/* Back face — skull */}
+              <div className="absolute inset-0 rounded-full ring-2 ring-neon-red/50 overflow-hidden" style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>
+                <img src={skullBack} alt="TeamCyberØps skull mark" width={512} height={512} className="h-full w-full object-cover" />
+              </div>
             </motion.div>
             <div className="pointer-events-none absolute inset-x-2 top-1/2 h-px bg-primary/70 opacity-0 shadow-[0_0_18px_hsl(var(--primary)/0.95)] transition-opacity duration-300 hero-logo-slice" />
           </div>
@@ -91,6 +109,28 @@ const HeroSection = () => {
             className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 border border-neon-red/30 text-neon-red hover:bg-neon-red/10 hover:box-glow-red transition-all duration-300 rounded-lg"
           >
             {content?.hero_cta_secondary || "GitHub →"}
+          </a>
+
+          {/* CTF button */}
+          <a
+            href="https://ctfcyberops.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative font-display text-sm tracking-[0.2em] uppercase px-8 py-3 rounded-lg overflow-hidden border border-neon-green/40 text-neon-green transition-all duration-300 hover:shadow-[0_0_24px_hsl(var(--neon-green)/0.35),inset_0_0_24px_hsl(var(--neon-green)/0.08)]"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-neon-green/0 via-neon-green/15 to-neon-green/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            <span className="relative flex items-center gap-2">🏴 CTF</span>
+          </a>
+
+          {/* WebRecox button */}
+          <a
+            href="https://webrecox.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative font-display text-sm tracking-[0.2em] uppercase px-8 py-3 rounded-lg overflow-hidden border border-[hsl(280,80%,55%)]/40 text-[hsl(280,80%,65%)] transition-all duration-300 hover:shadow-[0_0_24px_hsl(280_80%_55%/0.35),inset_0_0_24px_hsl(280_80%_55%/0.08)]"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-[hsl(280,80%,55%)]/0 via-[hsl(280,80%,55%)]/15 to-[hsl(280,80%,55%)]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            <span className="relative flex items-center gap-2">🔍 WebRecox</span>
           </a>
         </motion.div>
       </div>

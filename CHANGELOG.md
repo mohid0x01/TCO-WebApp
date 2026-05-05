@@ -2,6 +2,37 @@
 
 All notable changes to TeamCyberØps are documented here.
 
+## [1.8.0] — 2026-05-05
+
+### Added
+- All site logos now auto-update from GitHub organization avatar (navbar, hero, footer, mission section)
+- Shared `useGitHubAvatar` hook with 1-hour cache for consistent, auto-refreshing branding
+- CTF button links to `ctfcyberops.vercel.app`, WebRecox button links to `webrecox.vercel.app`
+- Beautified CTF (neon-green sweep) and WebRecox (purple sweep) buttons with shimmer hover effects
+- Ripple hover effect and slow-ping aura on the floating GitHub widget trigger
+- Radial hover glow on floating widget popup action links
+
+### Fixed
+- Hero logo flip skull image now reliably appears on the back face at all viewport sizes (inline `backfaceVisibility` on wrapper divs)
+- Removed conflicting `.hero-logo-face` CSS `background` and `transform` that blocked skull rendering
+
+### Changed
+- Navbar, Footer, and MissionSection badges replaced with live GitHub avatar instead of static JPEG
+
+## [1.7.0] — 2026-05-05
+
+### Added
+- CTF and WebRecox CTA buttons in the hero section
+- Floating GitHub profile widget (bottom-right) with auto-updating avatar from GitHub API
+- Portfolio, GitHub, and Oneliners Library links in the floating widget popup
+
+### Fixed
+- Hero logo flip now correctly reveals the skull image on the back face (fixed CSS backface-visibility conflict)
+- `#services` anchor link on the home page is now scrollable from the navbar
+
+### Changed
+- WebGL 3D background remains fully active with particle field, wireframe globe, floating rings, and grid floor
+
 ## [1.6.0] — 2026-05-03
 
 ### Added
