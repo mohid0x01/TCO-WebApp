@@ -9,6 +9,7 @@ import ServicesSection from "@/components/ServicesSection";
 import ContactSection from "@/components/ContactSection";
 import FooterSection, { SocialBar } from "@/components/FooterSection";
 import CyberBackground3D from "@/components/CyberBackground3D";
+import FloatingGitHubWidget from "@/components/FloatingGitHubWidget";
 
 const Index = () => {
   return (
@@ -25,6 +26,7 @@ const Index = () => {
       <BlogSection />
       <ContactSection />
       <FooterSection />
+      <FloatingGitHubWidget />
     </div>
   );
 };

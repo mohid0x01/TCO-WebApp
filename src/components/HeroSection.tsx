@@ -37,8 +37,8 @@ const HeroSection = () => {
             <div className="hero-logo-orbit absolute -inset-4 rounded-full border border-primary/25 scanline" />
             <div className="absolute inset-0 rounded-full border border-neon-red/15" />
             <motion.div className="hero-logo-card relative h-full w-full cursor-pointer rounded-full" style={{ transformStyle: "preserve-3d" }} animate={{ rotateY: reduceMotion ? 0 : flipped ? 180 : 0, rotateZ: flipped ? -1.5 : 0, filter: flipped ? "drop-shadow(0 0 30px hsl(var(--neon-red) / 0.58))" : "drop-shadow(0 0 30px hsl(var(--primary) / 0.58))" }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
-              <img src={heroLogo} alt="TeamCyberØps logo" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-primary/50 object-cover backface-hidden" />
-              <img src={skullBack} alt="TeamCyberØps skull mark" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-neon-red/50 object-cover backface-hidden" style={{ transform: "rotateY(180deg)" }} />
+              <img src={heroLogo} alt="TeamCyberØps logo" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-primary/50 object-cover" />
+              <img src={skullBack} alt="TeamCyberØps skull mark" width={512} height={512} className="hero-logo-face absolute inset-0 h-full w-full rounded-full ring-2 ring-neon-red/50 object-cover" style={{ transform: "rotateY(180deg)" }} />
             </motion.div>
             <div className="pointer-events-none absolute inset-x-2 top-1/2 h-px bg-primary/70 opacity-0 shadow-[0_0_18px_hsl(var(--primary)/0.95)] transition-opacity duration-300 hero-logo-slice" />
           </div>
@@ -91,6 +91,18 @@ const HeroSection = () => {
             className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 border border-neon-red/30 text-neon-red hover:bg-neon-red/10 hover:box-glow-red transition-all duration-300 rounded-lg"
           >
             {content?.hero_cta_secondary || "GitHub →"}
+          </a>
+          <a
+            href="/tools"
+            className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 border border-neon-green/30 text-neon-green hover:bg-neon-green/10 transition-all duration-300 rounded-lg"
+          >
+            🏴 CTF
+          </a>
+          <a
+            href="/services"
+            className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 border border-primary/30 text-primary hover:bg-primary/10 transition-all duration-300 rounded-lg"
+          >
+            🔍 WebRecox
           </a>
         </motion.div>
       </div>
