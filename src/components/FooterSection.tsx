@@ -57,7 +57,7 @@ const FooterSection = () => {
       <div className="relative max-w-6xl mx-auto">
         <div className="grid md:grid-cols-3 gap-10 items-start">
           <div className="flex items-center gap-4">
-            <img src={badge} alt="TeamCyberOps" width={48} height={48} className="rounded-full ring-1 ring-primary/20" loading="lazy" />
+            <img src={avatarUrl} alt="TeamCyberOps" width={48} height={48} className="rounded-full ring-1 ring-primary/20" loading="lazy" />
             <div>
               <span className="font-display text-xl text-primary text-glow-blue block">TEAMCYBEROPS</span>
               <p className="font-mono-terminal text-[10px] text-muted-foreground mt-0.5">{content?.footer_tagline || "Monitor and Protect"}</p>
