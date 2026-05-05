@@ -49,6 +49,7 @@ const FooterSection = () => {
   const { data: links } = useSocialLinks();
   const { data: content } = useSiteContent();
   const socials = links || [];
+  const avatarUrl = useGitHubAvatar();
 
   return (
     <footer className="relative border-t border-border/50 py-16 px-4">
