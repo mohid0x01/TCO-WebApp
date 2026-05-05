@@ -2,6 +2,20 @@
 
 All notable changes to TeamCyberØps are documented here.
 
+## [1.7.0] — 2026-05-05
+
+### Added
+- CTF and WebRecox CTA buttons in the hero section
+- Floating GitHub profile widget (bottom-right) with auto-updating avatar from GitHub API
+- Portfolio, GitHub, and Oneliners Library links in the floating widget popup
+
+### Fixed
+- Hero logo flip now correctly reveals the skull image on the back face (fixed CSS backface-visibility conflict)
+- `#services` anchor link on the home page is now scrollable from the navbar
+
+### Changed
+- WebGL 3D background remains fully active with particle field, wireframe globe, floating rings, and grid floor
+
 ## [1.6.0] — 2026-05-03
 
 ### Added
