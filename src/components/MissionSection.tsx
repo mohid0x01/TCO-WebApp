@@ -1,8 +1,8 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
-import badge from "@/assets/teamcyberops-badge.jpeg";
 import skullBack from "@/assets/skull-back.png";
 import { useSiteContent } from "@/hooks/use-cms";
+import { useGitHubAvatar } from "@/hooks/use-github-avatar";
 
 const FlipLogo = () => {
   const [isFlipped, setIsFlipped] = useState(false);
