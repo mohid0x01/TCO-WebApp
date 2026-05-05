@@ -1,47 +1,49 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
+import { useGitHubAvatar } from "@/hooks/use-github-avatar";
 
 const GITHUB_ORG = "mohidqx";
-const AVATAR_CACHE_KEY = "gh_avatar_url";
-const AVATAR_CACHE_TTL = 3600_000; // 1 hour
+
+const ExternalIcon = () => (
+  <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+  </svg>
+);
+
+const WidgetLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="group/link relative flex items-center justify-between px-4 py-2.5 rounded-xl border border-border/40 text-foreground/80 overflow-hidden transition-all text-sm font-mono-terminal hover:border-primary/30 hover:text-primary"
+  >
+    <span className="absolute inset-0 bg-primary/0 group-hover/link:bg-primary/5 transition-colors duration-300" />
+    <span className="absolute inset-0 rounded-xl opacity-0 group-hover/link:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_var(--x,50%)_var(--y,50%),hsl(var(--primary)/0.12)_0%,transparent_60%)]" />
+    <span className="relative flex items-center gap-2">{children}</span>
+    <ExternalIcon />
+  </a>
+);
 
 const FloatingGitHubWidget = () => {
   const [open, setOpen] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(`https://github.com/${GITHUB_ORG}.png?size=96`);
-
-  useEffect(() => {
-    try {
-      const cached = localStorage.getItem(AVATAR_CACHE_KEY);
-      if (cached) {
-        const { url, ts } = JSON.parse(cached);
-        if (Date.now() - ts < AVATAR_CACHE_TTL) { setAvatarUrl(url); return; }
-      }
-    } catch {}
-    fetch(`https://api.github.com/users/${GITHUB_ORG}`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.avatar_url) {
-          const url = `${d.avatar_url}&s=96`;
-          setAvatarUrl(url);
-          localStorage.setItem(AVATAR_CACHE_KEY, JSON.stringify({ url, ts: Date.now() }));
-        }
-      })
-      .catch(() => {});
-  }, []);
+  const avatarUrl = useGitHubAvatar();
 
   return (
     <>
-      {/* Floating trigger button */}
+      {/* Floating trigger */}
       <motion.button
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 2.5, type: "spring", stiffness: 260, damping: 20 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full overflow-hidden ring-2 ring-primary/40 hover:ring-primary/80 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full overflow-hidden ring-2 ring-primary/40 hover:ring-primary/80 shadow-lg shadow-primary/20 hover:shadow-[0_0_28px_hsl(var(--primary)/0.45)] transition-all duration-300"
         aria-label="Open GitHub profile"
       >
-        <img src={avatarUrl} alt="GitHub" className="w-full h-full object-cover" />
+        <span className="absolute inset-0 rounded-full animate-ping bg-primary/20 pointer-events-none" style={{ animationDuration: "3s" }} />
+        <img src={avatarUrl} alt="GitHub" className="relative w-full h-full object-cover" />
       </motion.button>
 
       {/* Popup card */}
@@ -67,37 +69,14 @@ const FloatingGitHubWidget = () => {
             </div>
 
             <p className="text-sm text-muted-foreground mb-4">
-              Explore tools, write-ups, CTF solves and bug-bounty research from <a href={`https://github.com/${GITHUB_ORG}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@{GITHUB_ORG}</a>.
+              Explore tools, write-ups, CTF solves and bug-bounty research from{" "}
+              <a href={`https://github.com/${GITHUB_ORG}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@{GITHUB_ORG}</a>.
             </p>
 
             <div className="flex flex-col gap-2">
-              <a
-                href="https://teamcyberops.lovable.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-primary/30 text-primary hover:bg-primary/10 transition-all text-sm font-mono-terminal"
-              >
-                <span className="flex items-center gap-2">🌐 Visit Portfolio</span>
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-              </a>
-              <a
-                href={`https://github.com/${GITHUB_ORG}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-border/40 text-foreground/80 hover:bg-primary/5 transition-all text-sm font-mono-terminal"
-              >
-                <span className="flex items-center gap-2">⚡ GitHub @{GITHUB_ORG}</span>
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-              </a>
-              <a
-                href={`https://github.com/${GITHUB_ORG}?tab=repositories`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-border/40 text-foreground/80 hover:bg-primary/5 transition-all text-sm font-mono-terminal"
-              >
-                <span className="flex items-center gap-2">📁 Oneliners Library</span>
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-              </a>
+              <WidgetLink href="https://teamcyberops.lovable.app">🌐 Visit Portfolio</WidgetLink>
+              <WidgetLink href={`https://github.com/${GITHUB_ORG}`}>⚡ GitHub @{GITHUB_ORG}</WidgetLink>
+              <WidgetLink href={`https://github.com/${GITHUB_ORG}?tab=repositories`}>📁 Oneliners Library</WidgetLink>
             </div>
           </motion.div>
         )}
