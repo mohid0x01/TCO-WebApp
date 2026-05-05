@@ -92,6 +92,18 @@ const HeroSection = () => {
           >
             {content?.hero_cta_secondary || "GitHub →"}
           </a>
+          <a
+            href="/tools"
+            className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 border border-neon-green/30 text-neon-green hover:bg-neon-green/10 transition-all duration-300 rounded-lg"
+          >
+            🏴 CTF
+          </a>
+          <a
+            href="/services"
+            className="font-display text-sm tracking-[0.2em] uppercase px-8 py-3 border border-primary/30 text-primary hover:bg-primary/10 transition-all duration-300 rounded-lg"
+          >
+            🔍 WebRecox
+          </a>
         </motion.div>
       </div>
 
