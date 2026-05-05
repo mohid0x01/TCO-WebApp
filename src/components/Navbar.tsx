@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import badge from "@/assets/teamcyberops-badge.jpeg";
+import { useGitHubAvatar } from "@/hooks/use-github-avatar";
 
 const navLinks = [
   { label: "Mission", href: "#mission", type: "scroll" },
@@ -23,6 +23,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const avatarUrl = useGitHubAvatar();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -51,7 +52,7 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3 group">
-              <img src={badge} alt="TeamCyberOps" width={36} height={36} className="rounded-full ring-2 ring-primary/30 group-hover:ring-primary/60 transition-all" />
+              <img src={avatarUrl} alt="TeamCyberOps" width={36} height={36} className="rounded-full ring-2 ring-primary/30 group-hover:ring-primary/60 transition-all" />
               <span className="font-display text-lg text-primary text-glow-blue hidden sm:block">TEAMCYBEROPS</span>
             </Link>
 
