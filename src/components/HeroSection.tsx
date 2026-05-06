@@ -10,6 +10,7 @@ import { useState } from "react";
 const HeroSection = () => {
   const { data: content } = useSiteContent();
   const [flipped, setFlipped] = useState(false);
+  const [locked, setLocked] = useState(false);
   const reduceMotion = useReducedMotion();
   const rawTitle = content?.hero_title || "TeamCyberØps";
   const heroTitle = rawTitle.replace(/teamcyberops/i, "TeamCyberØps");
