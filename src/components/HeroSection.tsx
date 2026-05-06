@@ -34,7 +34,7 @@ const HeroSection = () => {
           transition={{ duration: 1, ease: "easeOut" }}
           className="mb-8 sm:mb-10"
         >
-          <div className="hero-logo-shell relative inline-block h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 lg:h-48 lg:w-48" style={{ perspective: "1400px" }} onMouseEnter={() => !reduceMotion && setFlipped(true)} onMouseLeave={() => setFlipped(false)} onClick={() => setFlipped((v) => !v)} aria-label="Flip TeamCyberØps logo">
+          <div className="hero-logo-shell relative inline-block h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 lg:h-48 lg:w-48" style={{ perspective: "1400px" }} onMouseEnter={() => !reduceMotion && !locked && setFlipped(true)} onMouseLeave={() => !locked && setFlipped(false)} onClick={() => { setLocked((l) => !l); setFlipped((v) => !v); }} aria-label="Flip TeamCyberØps logo">
             <div className="absolute -inset-5 rounded-full bg-primary/20 blur-3xl animate-pulse-glow" />
             <div className="hero-logo-orbit absolute -inset-4 rounded-full border border-primary/25 scanline" />
             <div className="absolute inset-0 rounded-full border border-neon-red/15" />
