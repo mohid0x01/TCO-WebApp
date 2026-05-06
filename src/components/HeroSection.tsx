@@ -37,27 +37,32 @@ const HeroSection = () => {
             <div className="absolute -inset-5 rounded-full bg-primary/20 blur-3xl animate-pulse-glow" />
             <div className="hero-logo-orbit absolute -inset-4 rounded-full border border-primary/25 scanline" />
             <div className="absolute inset-0 rounded-full border border-neon-red/15" />
-            <motion.div
+            <div
               className="hero-logo-card relative h-full w-full cursor-pointer rounded-full"
-              style={{ transformStyle: "preserve-3d" }}
-              animate={{
-                rotateY: reduceMotion ? 0 : flipped ? 180 : 0,
-                rotateZ: flipped ? -1.5 : 0,
+              style={{
+                transformStyle: "preserve-3d",
+                transition: "transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s ease",
+                transform: `rotateY(${reduceMotion ? 0 : flipped ? 180 : 0}deg) rotateZ(${flipped ? -1.5 : 0}deg)`,
                 filter: flipped
                   ? "drop-shadow(0 0 30px hsl(var(--neon-red) / 0.58))"
                   : "drop-shadow(0 0 30px hsl(var(--primary) / 0.58))",
               }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             >
               {/* Front face — GitHub auto-updated avatar */}
-              <div className="absolute inset-0 rounded-full ring-2 ring-primary/50 overflow-hidden" style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}>
+              <div
+                className="absolute inset-0 rounded-full ring-2 ring-primary/50 overflow-hidden"
+                style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+              >
                 <img src={avatarUrl} alt="TeamCyberØps logo" width={512} height={512} className="h-full w-full object-cover" />
               </div>
               {/* Back face — skull */}
-              <div className="absolute inset-0 rounded-full ring-2 ring-neon-red/50 overflow-hidden" style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>
+              <div
+                className="absolute inset-0 rounded-full ring-2 ring-neon-red/50 overflow-hidden"
+                style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+              >
                 <img src={skullBack} alt="TeamCyberØps skull mark" width={512} height={512} className="h-full w-full object-cover" />
               </div>
-            </motion.div>
+            </div>
             <div className="pointer-events-none absolute inset-x-2 top-1/2 h-px bg-primary/70 opacity-0 shadow-[0_0_18px_hsl(var(--primary)/0.95)] transition-opacity duration-300 hero-logo-slice" />
           </div>
         </motion.div>
