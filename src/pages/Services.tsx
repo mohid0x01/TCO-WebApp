@@ -50,6 +50,11 @@ const Services = () => {
     if (service) params.set("service", service.title);
     if (tier) params.set("tier", tier);
     navigate(`/?${params.toString()}#contact`);
+    // Scroll to contact after navigation
+    setTimeout(() => {
+      const el = document.getElementById("contact");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 300);
   };
 
   return (

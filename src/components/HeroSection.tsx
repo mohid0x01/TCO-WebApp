@@ -10,6 +10,7 @@ import { useState } from "react";
 const HeroSection = () => {
   const { data: content } = useSiteContent();
   const [flipped, setFlipped] = useState(false);
+  const [locked, setLocked] = useState(false);
   const reduceMotion = useReducedMotion();
   const rawTitle = content?.hero_title || "TeamCyberØps";
   const heroTitle = rawTitle.replace(/teamcyberops/i, "TeamCyberØps");
@@ -33,31 +34,35 @@ const HeroSection = () => {
           transition={{ duration: 1, ease: "easeOut" }}
           className="mb-8 sm:mb-10"
         >
-          <div className="hero-logo-shell relative inline-block h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 lg:h-48 lg:w-48" style={{ perspective: "1400px" }} onMouseEnter={() => !reduceMotion && setFlipped(true)} onMouseLeave={() => setFlipped(false)} onClick={() => setFlipped((v) => !v)} aria-label="Flip TeamCyberØps logo">
+          <div className="hero-logo-shell relative inline-block h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 lg:h-48 lg:w-48" style={{ perspective: "1400px" }} onMouseEnter={() => !reduceMotion && !locked && setFlipped(true)} onMouseLeave={() => !locked && setFlipped(false)} onClick={() => { setLocked((l) => !l); setFlipped((v) => !v); }} aria-label="Flip TeamCyberØps logo">
             <div className="absolute -inset-5 rounded-full bg-primary/20 blur-3xl animate-pulse-glow" />
             <div className="hero-logo-orbit absolute -inset-4 rounded-full border border-primary/25 scanline" />
             <div className="absolute inset-0 rounded-full border border-neon-red/15" />
-            <motion.div
+            <div
               className="hero-logo-card relative h-full w-full cursor-pointer rounded-full"
-              style={{ transformStyle: "preserve-3d" }}
-              animate={{
-                rotateY: reduceMotion ? 0 : flipped ? 180 : 0,
-                rotateZ: flipped ? -1.5 : 0,
+              style={{
+                transition: "transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s ease",
+                transform: `rotateY(${reduceMotion ? 0 : flipped ? 180 : 0}deg) rotateZ(${flipped ? -1.5 : 0}deg)`,
                 filter: flipped
                   ? "drop-shadow(0 0 30px hsl(var(--neon-red) / 0.58))"
                   : "drop-shadow(0 0 30px hsl(var(--primary) / 0.58))",
               }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             >
               {/* Front face — GitHub auto-updated avatar */}
-              <div className="absolute inset-0 rounded-full ring-2 ring-primary/50 overflow-hidden" style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}>
+              <div
+                className="absolute inset-0 rounded-full ring-2 ring-primary/50 overflow-hidden transition-opacity duration-300"
+                style={{ opacity: flipped ? 0 : 1 }}
+              >
                 <img src={avatarUrl} alt="TeamCyberØps logo" width={512} height={512} className="h-full w-full object-cover" />
               </div>
               {/* Back face — skull */}
-              <div className="absolute inset-0 rounded-full ring-2 ring-neon-red/50 overflow-hidden" style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>
+              <div
+                className="absolute inset-0 rounded-full ring-2 ring-neon-red/50 overflow-hidden transition-opacity duration-300"
+                style={{ opacity: flipped ? 1 : 0 }}
+              >
                 <img src={skullBack} alt="TeamCyberØps skull mark" width={512} height={512} className="h-full w-full object-cover" />
               </div>
-            </motion.div>
+            </div>
             <div className="pointer-events-none absolute inset-x-2 top-1/2 h-px bg-primary/70 opacity-0 shadow-[0_0_18px_hsl(var(--primary)/0.95)] transition-opacity duration-300 hero-logo-slice" />
           </div>
         </motion.div>
