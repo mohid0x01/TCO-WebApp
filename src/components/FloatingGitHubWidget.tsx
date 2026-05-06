@@ -37,9 +37,21 @@ const FloatingGitHubWidget = () => {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 2.5, type: "spring", stiffness: 260, damping: 20 }}
         whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full overflow-hidden ring-2 ring-primary/40 hover:ring-primary/80 shadow-lg shadow-primary/20 hover:shadow-[0_0_28px_hsl(var(--primary)/0.45)] transition-all duration-300"
+        whileTap={{ scale: 0.92 }}
+        onClick={(e) => {
+          // Ripple effect
+          const btn = e.currentTarget;
+          const circle = document.createElement("span");
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const size = Math.max(rect.width, rect.height) * 2;
+          circle.style.cssText = `position:absolute;left:${x - size / 2}px;top:${y - size / 2}px;width:${size}px;height:${size}px;border-radius:50%;background:hsl(var(--primary)/0.35);transform:scale(0);animation:widget-ripple 0.6s ease-out forwards;pointer-events:none;z-index:10;`;
+          btn.appendChild(circle);
+          setTimeout(() => circle.remove(), 650);
+          setOpen((v) => !v);
+        }}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full overflow-hidden ring-2 ring-primary/40 hover:ring-primary/80 shadow-lg shadow-primary/20 hover:shadow-[0_0_28px_hsl(var(--primary)/0.45)] transition-all duration-300 active:scale-90"
         aria-label="Open GitHub profile"
       >
         <span className="absolute inset-0 rounded-full animate-ping bg-primary/20 pointer-events-none" style={{ animationDuration: "3s" }} />
