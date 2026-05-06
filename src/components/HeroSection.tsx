@@ -40,7 +40,6 @@ const HeroSection = () => {
             <div
               className="hero-logo-card relative h-full w-full cursor-pointer rounded-full"
               style={{
-                transformStyle: "preserve-3d",
                 transition: "transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s ease",
                 transform: `rotateY(${reduceMotion ? 0 : flipped ? 180 : 0}deg) rotateZ(${flipped ? -1.5 : 0}deg)`,
                 filter: flipped
@@ -50,15 +49,15 @@ const HeroSection = () => {
             >
               {/* Front face — GitHub auto-updated avatar */}
               <div
-                className="absolute inset-0 rounded-full ring-2 ring-primary/50 overflow-hidden"
-                style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+                className="absolute inset-0 rounded-full ring-2 ring-primary/50 overflow-hidden transition-opacity duration-300"
+                style={{ opacity: flipped ? 0 : 1 }}
               >
                 <img src={avatarUrl} alt="TeamCyberØps logo" width={512} height={512} className="h-full w-full object-cover" />
               </div>
               {/* Back face — skull */}
               <div
-                className="absolute inset-0 rounded-full ring-2 ring-neon-red/50 overflow-hidden"
-                style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+                className="absolute inset-0 rounded-full ring-2 ring-neon-red/50 overflow-hidden transition-opacity duration-300"
+                style={{ opacity: flipped ? 1 : 0 }}
               >
                 <img src={skullBack} alt="TeamCyberØps skull mark" width={512} height={512} className="h-full w-full object-cover" />
               </div>
